@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribe – Post-AGI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --paper: #fdfcfa;
+      --ink: #1a1a1a;
+      --ink-light: #6b7280;
+      --ink-faint: #9ca3af;
+      --rule: #e5e5e5;
+      --rule-dark: #d4d4d4;
+      --accent: #c2410c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.7;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .masthead {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .logo {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav a {
+      font-size: 14px;
+      color: var(--ink-light);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .nav a:hover {
+      color: var(--ink);
+    }
+
+    .main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+
+    h1 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 38px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    p {
+      margin-bottom: 32px;
+      line-height: 1.8;
+      color: var(--ink-light);
+    }
+
+    .subscribe-form {
+      display: flex;
+      gap: 12px;
+      max-width: 480px;
+    }
+
+    .subscribe-form input[type="email"] {
+      flex: 1;
+      padding: 12px 16px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 15px;
+      border: 1px solid var(--rule-dark);
+      background: white;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .subscribe-form input[type="email"]:focus {
+      border-color: var(--ink);
+    }
+
+    .subscribe-form button {
+      padding: 12px 24px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      cursor: pointer;
+    }
+
+    .subscribe-form button:hover {
+      background: #333;
+    }
+
+    .note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    .footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 48px;
+      border-top: 2px solid var(--ink);
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    @media (max-width: 600px) {
+      .masthead {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .subscribe-form {
+        flex-direction: column;
+      }
+
+      .footer {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="masthead">
+    <a href="index.html" class="logo">Post-AGI</a>
+    <nav class="nav">
+      <a href="archive.html">Archive</a>
+      <a href="about.html">About</a>
+      <a href="subscribe.html">Subscribe</a>
+    </nav>
+  </header>
+
+  <main class="main">
+    <h1>Subscribe</h1>
+    <p>New essays on AI, work, and the post-AGI economy. No spam, no schedule — just when there's something worth reading.</p>
+
+    <form class="subscribe-form" action="#" method="post">
+      <input type="email" name="email" placeholder="Your email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="note">Not hooked up yet. Coming soon.</p>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Post-AGI</p>
+  </footer>
+
+</body>
+</html>
