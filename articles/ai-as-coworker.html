@@ -377,15 +377,41 @@
       .compare-table { font-size: 13px; }
       .compare-table td, .compare-table th { padding: 10px 8px; }
     }
+    .site-nav {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+    }
+
+    .site-nav a {
+      font-size: 14px;
+      color: var(--ink-light);
+      text-decoration: none;
+    }
+
+    .site-nav a:hover {
+      color: var(--ink);
+    }
+
+    .site-nav .logo {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
   </style>
 </head>
 <body>
+  <nav class="site-nav">
+    <a href="../index.html" class="logo">post-agi</a>
+  </nav>
   <div class="container">
 
     <header>
       <div class="scenario-label">Analysis</div>
       <h1>AI as a Coworker: What It Can and Can't Do</h1>
-      <div class="dateline">What AI actually looks like as a coworker, March 2026</div>
+      <div class="dateline">March 2026</div>
     </header>
 
     <!-- OPENING -->
@@ -772,25 +798,19 @@
       desc: 'Sets company strategy. Synthesizes market signals, competitive intelligence, and internal capabilities into decisions that define what the company does next.',
       capabilities: [
         { name: 'Processing market reports', ai: 92, human: 70, note: 'AI reads faster and more broadly', color: 'var(--green)' },
-        { name: 'Synthesizing across sources', ai: 75, human: 85, note: 'AI finds patterns but misses nuance', color: '#eab308' },
-        { name: 'Organizational knowledge', ai: 5, human: 95, note: 'Only 20% of enterprise context is in structured systems', color: 'var(--red)' },
+        { name: 'Synthesizing across sources', ai: 55, human: 85, note: 'AI finds patterns but misses nuance and context', color: '#eab308' },
         { name: 'Political judgment', ai: 5, human: 90, note: 'Who will fund this? Who will block it? AI has no access', color: 'var(--red)' },
         { name: 'Long-term pattern matching', ai: 40, human: 80, note: 'AI sees what\'s in data. Humans see what\'s not', color: 'var(--red)' },
-        { name: 'Challenging assumptions', ai: 20, human: 75, note: 'AI is sycophantic. Agrees with whatever you say', color: 'var(--red)' },
-        { name: 'Taking initiative', ai: 0, human: 90, note: 'AI does nothing without a prompt', color: 'var(--red)' },
       ]
     },
     director: {
       title: 'Director of Innovation',
       desc: 'Evaluates new ideas and technologies. Decides which bets to make with limited resources. Needs to kill bad ideas early, which means arguing against them.',
       capabilities: [
-        { name: 'Generating options', ai: 90, human: 60, note: 'AI produces more ideas faster. Most are generic', color: 'var(--green)' },
-        { name: 'Evaluating feasibility', ai: 40, human: 85, note: 'AI doesn\'t know what your team can actually build', color: 'var(--red)' },
+        { name: 'Generating options', ai: 90, human: 70, note: 'AI produces more ideas faster. Most are generic', color: 'var(--green)' },
         { name: 'Technical due diligence', ai: 70, human: 80, note: 'Good on known tech, hallucinates on emerging', color: '#eab308' },
+        { name: 'Evaluating feasibility', ai: 20, human: 85, note: 'AI doesn\'t know your team, budget, or org constraints', color: 'var(--red)' },
         { name: 'Killing bad ideas', ai: 10, human: 80, note: 'Sycophancy makes AI a terrible devil\'s advocate', color: 'var(--red)' },
-        { name: 'Cross-team coordination', ai: 5, human: 85, note: 'Requires relationships, politics, persuasion', color: 'var(--red)' },
-        { name: 'Spotting weak signals', ai: 35, human: 70, note: 'AI sees what\'s published. Misses hallway conversations', color: 'var(--red)' },
-        { name: 'Building conviction', ai: 5, human: 80, note: 'AI doesn\'t believe anything. It can\'t defend a position under pressure', color: 'var(--red)' },
       ]
     },
     analyst: {
@@ -800,10 +820,7 @@
         { name: 'Data gathering and processing', ai: 90, human: 65, note: 'AI is dramatically faster at pulling and formatting data', color: 'var(--green)' },
         { name: 'Report writing', ai: 85, human: 70, note: 'First drafts are fast and structurally sound', color: 'var(--green)' },
         { name: 'Campaign performance analysis', ai: 75, human: 80, note: 'Good on standard metrics. Misses context of why', color: '#eab308' },
-        { name: 'Competitor tracking', ai: 70, human: 75, note: 'Good on public info. No access to sales intel, events', color: '#eab308' },
         { name: 'Spotting anomalies', ai: 45, human: 75, note: 'Tends to summarize the obvious, not dig into the weird', color: 'var(--red)' },
-        { name: 'Stakeholder communication', ai: 15, human: 85, note: 'Knowing what your VP actually wants to see', color: 'var(--red)' },
-        { name: 'Proactive insight', ai: 5, human: 70, note: '"Hey, I noticed something in the Q3 data" — AI never does this', color: 'var(--red)' },
       ]
     }
   };
