@@ -36,6 +36,16 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 2px solid var(--ink);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--paper);
+      transition: padding 0.3s ease, border-bottom-color 0.3s ease;
+    }
+
+    .masthead.scrolled {
+      padding: 16px 48px;
+      border-bottom: 1px solid var(--rule-dark);
     }
 
     .logo {
@@ -45,6 +55,11 @@
       letter-spacing: -0.03em;
       color: var(--ink);
       text-decoration: none;
+      transition: font-size 0.3s ease;
+    }
+
+    .masthead.scrolled .logo {
+      font-size: 24px;
     }
 
     .nav {
@@ -215,6 +230,17 @@
   <footer class="site-footer">
     <p>© 2026 Post-AGI</p>
   </footer>
+
+  <script>
+    const masthead = document.querySelector('.masthead');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        masthead.classList.add('scrolled');
+      } else {
+        masthead.classList.remove('scrolled');
+      }
+    });
+  </script>
 
 </body>
 </html>
