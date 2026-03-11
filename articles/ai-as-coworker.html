@@ -281,9 +281,10 @@
     }
 
     .cap-score {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 16px;
-      font-weight: 500;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     .cap-bar {
@@ -291,22 +292,12 @@
       background: var(--rule);
       border-radius: 4px;
       overflow: hidden;
-      position: relative;
     }
 
     .cap-bar-fill {
       height: 100%;
       border-radius: 4px;
       transition: width 0.4s ease;
-    }
-
-    .cap-bar-human {
-      position: absolute;
-      top: -3px;
-      width: 2px;
-      height: 14px;
-      background: var(--ink);
-      border-radius: 1px;
     }
 
     .cap-note {
@@ -853,30 +844,30 @@
       title: 'Chief Strategy Officer',
       desc: 'Sets company strategy. Synthesizes market signals, competitive intelligence, and internal capabilities into decisions that define what the company does next.',
       capabilities: [
-        { name: 'Processing market reports', ai: 92, human: 70, note: 'AI reads faster and more broadly', color: 'var(--green)' },
-        { name: 'Synthesizing across sources', ai: 55, human: 85, note: 'AI finds patterns but misses nuance and context', color: '#eab308' },
-        { name: 'Political judgment', ai: 5, human: 90, note: 'Who will fund this? Who will block it? AI has no access', color: 'var(--red)' },
-        { name: 'Long-term pattern matching', ai: 40, human: 80, note: 'AI sees what\'s in data. Humans see what\'s not', color: 'var(--red)' },
+        { name: 'Processing market reports', level: 'Strong', bar: 90, note: 'AI reads faster and more broadly', color: 'var(--green)' },
+        { name: 'Synthesizing across sources', level: 'Partial', bar: 55, note: 'Finds patterns but misses nuance and context', color: '#eab308' },
+        { name: 'Political judgment', level: 'Minimal', bar: 5, note: 'Who will fund this? Who will block it? AI has no access', color: 'var(--red)' },
+        { name: 'Long-term pattern matching', level: 'Weak', bar: 30, note: 'Sees what\'s in data, not what\'s missing from it', color: 'var(--red)' },
       ]
     },
     director: {
       title: 'Director of Innovation',
       desc: 'Evaluates new ideas and technologies. Decides which bets to make with limited resources. Needs to kill bad ideas early, which means arguing against them.',
       capabilities: [
-        { name: 'Generating options', ai: 90, human: 70, note: 'AI produces more ideas faster. Most are generic', color: 'var(--green)' },
-        { name: 'Technical due diligence', ai: 70, human: 80, note: 'Good on known tech, hallucinates on emerging', color: '#eab308' },
-        { name: 'Evaluating feasibility', ai: 20, human: 85, note: 'AI doesn\'t know your team, budget, or org constraints', color: 'var(--red)' },
-        { name: 'Killing bad ideas', ai: 10, human: 80, note: 'Sycophancy makes AI a terrible devil\'s advocate', color: 'var(--red)' },
+        { name: 'Generating options', level: 'Strong', bar: 90, note: 'Produces more ideas faster, but most are generic', color: 'var(--green)' },
+        { name: 'Technical due diligence', level: 'Partial', bar: 65, note: 'Good on known tech, hallucinates on emerging', color: '#eab308' },
+        { name: 'Evaluating feasibility', level: 'Weak', bar: 20, note: 'Doesn\'t know your team, budget, or org constraints', color: 'var(--red)' },
+        { name: 'Killing bad ideas', level: 'Minimal', bar: 10, note: 'Sycophancy makes AI a terrible devil\'s advocate', color: 'var(--red)' },
       ]
     },
     analyst: {
       title: 'Marketing Analyst',
       desc: 'Gathers market data, tracks campaign performance, produces reports and recommendations. More execution-focused than the other two roles.',
       capabilities: [
-        { name: 'Data gathering and processing', ai: 90, human: 65, note: 'AI is dramatically faster at pulling and formatting data', color: 'var(--green)' },
-        { name: 'Report writing', ai: 85, human: 70, note: 'First drafts are fast and structurally sound', color: 'var(--green)' },
-        { name: 'Campaign performance analysis', ai: 75, human: 80, note: 'Good on standard metrics. Misses context of why', color: '#eab308' },
-        { name: 'Spotting anomalies', ai: 45, human: 75, note: 'Tends to summarize the obvious, not dig into the weird', color: 'var(--red)' },
+        { name: 'Data gathering and processing', level: 'Strong', bar: 90, note: 'Dramatically faster at pulling and formatting data', color: 'var(--green)' },
+        { name: 'Report writing', level: 'Strong', bar: 85, note: 'First drafts are fast and structurally sound', color: 'var(--green)' },
+        { name: 'Campaign performance analysis', level: 'Partial', bar: 65, note: 'Good on standard metrics, misses context of why', color: '#eab308' },
+        { name: 'Spotting anomalies', level: 'Weak', bar: 35, note: 'Tends to summarize the obvious, not dig into the weird', color: 'var(--red)' },
       ]
     }
   };
@@ -898,13 +889,12 @@
       row.innerHTML = `
         <div class="cap-label-row">
           <span class="cap-name">${cap.name}</span>
-          <span class="cap-score" style="color: ${cap.color}">${cap.ai}%</span>
+          <span class="cap-score" style="color: ${cap.color}">${cap.level}</span>
         </div>
         <div class="cap-bar">
-          <div class="cap-bar-fill" style="width: ${cap.ai}%; background: ${cap.color}"></div>
-          <div class="cap-bar-human" style="left: ${cap.human}%" title="Human: ${cap.human}%"></div>
+          <div class="cap-bar-fill" style="width: ${cap.bar}%; background: ${cap.color}"></div>
         </div>
-        <div class="cap-note">${cap.note} <span style="color: var(--ink)">|</span> Human baseline: ${cap.human}%</div>
+        <div class="cap-note">${cap.note}</div>
       `;
       container.appendChild(row);
     });
