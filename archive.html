@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archive – Post-AGI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --paper: #fdfcfa;
+      --paper-dark: #f8f7f5;
+      --ink: #1a1a1a;
+      --ink-light: #6b7280;
+      --ink-faint: #9ca3af;
+      --rule: #e5e5e5;
+      --rule-dark: #d4d4d4;
+      --accent: #c2410c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .site-header {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 24px 40px;
+      border-bottom: 1px solid var(--rule-dark);
+    }
+
+    .masthead {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .site-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    .site-nav a {
+      font-size: 13px;
+      color: var(--ink-light);
+      text-decoration: none;
+    }
+
+    .site-nav a:hover {
+      color: var(--ink);
+    }
+
+    .main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+
+    h1 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 38px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+    }
+
+    .year-section {
+      margin-bottom: 48px;
+    }
+
+    .year-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .archive-list {
+      list-style: none;
+    }
+
+    .archive-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: baseline;
+    }
+
+    .archive-item:last-child {
+      border-bottom: none;
+    }
+
+    .archive-date {
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    .archive-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .archive-title a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .archive-title a:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .archive-category {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .site-footer {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 24px;
+      border-top: 1px solid var(--rule-dark);
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    @media (max-width: 640px) {
+      .masthead {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .archive-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .archive-category {
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="masthead">
+      <a href="index.html" class="site-title">Post-AGI</a>
+      <nav class="site-nav">
+        <a href="archive.html">Archive</a>
+        <a href="about.html">About</a>
+        <a href="subscribe.html">Subscribe</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <h1>Archive</h1>
+
+    <section class="year-section">
+      <div class="year-label">2026</div>
+      <ul class="archive-list">
+
+        <li class="archive-item">
+          <span class="archive-date">Mar 11</span>
+          <h3 class="archive-title"><a href="articles/ai-as-coworker.html">What AI Can and Can't Do at Your Job</a></h3>
+          <span class="archive-category">Capability</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Mar 11</span>
+          <h3 class="archive-title"><a href="articles/measuring-ai-progress.html">Measuring AI Progress</a></h3>
+          <span class="archive-category">Capability</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Mar 6</span>
+          <h3 class="archive-title"><a href="articles/next-model-shock.html">Thirteen Barriers to AI Replacing Knowledge Work</a></h3>
+          <span class="archive-category">Scenario</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Mar 4</span>
+          <h3 class="archive-title"><a href="articles/governance-capacity.html">Can Institutions Function During the AI Transition?</a></h3>
+          <span class="archive-category">Governance</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Mar 3</span>
+          <h3 class="archive-title"><a href="articles/ghost-gdp.html">Ghost GDP</a></h3>
+          <span class="archive-category">Economics</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Feb 23</span>
+          <h3 class="archive-title"><a href="articles/anticipatory-judgment.html">Anticipatory Judgment</a></h3>
+          <span class="archive-category">Judgment</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Feb 23</span>
+          <h3 class="archive-title"><a href="articles/contextual-judgment.html">Contextual Judgment</a></h3>
+          <span class="archive-category">Judgment</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Feb 23</span>
+          <h3 class="archive-title"><a href="articles/evaluative-judgment.html">Evaluative Judgment</a></h3>
+          <span class="archive-category">Judgment</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Jan 25</span>
+          <h3 class="archive-title"><a href="articles/what-is-consciousness.html">What Is Consciousness? Latest Science 2024–2025</a></h3>
+          <span class="archive-category">Research</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Jan 17</span>
+          <h3 class="archive-title"><a href="articles/2026-displacement-scenario.html">2026 Displacement Scenario</a></h3>
+          <span class="archive-category">Displacement</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Jan 11</span>
+          <h3 class="archive-title"><a href="articles/industry-displacement-data.html">Industry Data on AI Job Displacement</a></h3>
+          <span class="archive-category">Displacement</span>
+        </li>
+
+        <li class="archive-item">
+          <span class="archive-date">Jan 12</span>
+          <h3 class="archive-title"><a href="articles/ai-job-boom-2035.html">The AI Job Boom of 2035</a></h3>
+          <span class="archive-category">Scenario</span>
+        </li>
+
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Post-AGI</p>
+  </footer>
+
+</body>
+</html>

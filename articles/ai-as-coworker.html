@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What AI Can and Can't Do at Your Job</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --paper: #fdfcfa;
+      --paper-dark: #f8f7f5;
+      --ink: #1a1a1a;
+      --ink-light: #6b7280;
+      --ink-faint: #9ca3af;
+      --rule: #e5e5e5;
+      --rule-dark: #d4d4d4;
+      --accent: #c2410c;
+      --accent-light: #fed7aa;
+      --green: #15803d;
+      --green-light: #dcfce7;
+      --blue: #1d4ed8;
+      --red: #b91c1c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.7;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    header {
+      margin-bottom: 64px;
+      border-bottom: 1px solid var(--rule-dark);
+      padding-bottom: 32px;
+    }
+
+    .scenario-label {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 42px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .dateline {
+      font-size: 12px;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    section {
+      margin-bottom: 56px;
+    }
+
+    h2 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 26px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin-bottom: 20px;
+      color: var(--ink);
+      line-height: 1.8;
+    }
+
+    .scene {
+      background: var(--paper-dark);
+      padding: 32px;
+      margin: 32px 0;
+      border-left: 3px solid var(--accent);
+    }
+
+    .scene p {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .scene p:last-child {
+      margin-bottom: 0;
+    }
+
+    .snapshot {
+      border: 1px solid var(--rule-dark);
+      margin: 32px 0;
+    }
+
+    .snapshot-header {
+      background: var(--paper-dark);
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--rule-dark);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-light);
+    }
+
+    .snapshot-body {
+      padding: 24px;
+    }
+
+    .snapshot-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 15px;
+    }
+
+    .snapshot-row:last-child {
+      border-bottom: none;
+    }
+
+    .snapshot-row .label {
+      color: var(--ink-light);
+      max-width: 65%;
+    }
+
+    .snapshot-row .value {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .world-context {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 32px;
+      margin: 40px 0;
+    }
+
+    .world-context h3 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      color: var(--paper);
+    }
+
+    .world-context p {
+      color: rgba(255,255,255,0.8);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .world-context p:last-child {
+      margin-bottom: 0;
+    }
+
+    .world-context .big-number {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 64px;
+      font-weight: 400;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .world-context .big-label {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .detail {
+      font-size: 15px;
+      color: var(--ink-light);
+      padding-left: 20px;
+      border-left: 2px solid var(--rule);
+      margin: 24px 0;
+      line-height: 1.7;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 32px 0;
+      font-size: 15px;
+    }
+
+    .compare-table th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-light);
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--rule-dark);
+      background: var(--paper-dark);
+    }
+
+    .compare-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+
+    .compare-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .grade {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .grade-good { background: var(--green-light); color: var(--green); }
+    .grade-ok { background: #fef3c7; color: #92400e; }
+    .grade-bad { background: #fecaca; color: var(--red); }
+
+    /* Interactive: capability slider */
+    .capability-explorer {
+      border: 1px solid var(--rule-dark);
+      margin: 40px 0;
+    }
+
+    .capability-explorer-header {
+      background: var(--paper-dark);
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--rule-dark);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-light);
+    }
+
+    .capability-explorer-body {
+      padding: 24px;
+    }
+
+    .cap-row {
+      margin-bottom: 20px;
+    }
+
+    .cap-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .cap-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .cap-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .cap-score {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .cap-bar {
+      height: 8px;
+      background: var(--rule);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cap-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    .cap-bar-human {
+      position: absolute;
+      top: -3px;
+      width: 2px;
+      height: 14px;
+      background: var(--ink);
+      border-radius: 1px;
+    }
+
+    .cap-note {
+      font-size: 12px;
+      color: var(--ink-faint);
+      margin-top: 4px;
+    }
+
+    /* Role tabs */
+    .role-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .role-tab {
+      padding: 6px 14px;
+      font-size: 13px;
+      border: 1px solid var(--rule-dark);
+      background: var(--paper);
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.15s;
+    }
+
+    .role-tab:hover {
+      background: var(--paper-dark);
+    }
+
+    .role-tab.active {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    .role-description {
+      font-size: 15px;
+      color: var(--ink-light);
+      margin-bottom: 20px;
+      min-height: 44px;
+    }
+
+    .source-list {
+      font-size: 13px;
+      color: var(--ink-faint);
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--rule);
+    }
+
+    .source-list p {
+      margin-bottom: 8px;
+      color: var(--ink-faint);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--rule);
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 32px; }
+      .world-context .big-number { font-size: 48px; }
+      .compare-table { font-size: 13px; }
+      .compare-table td, .compare-table th { padding: 10px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="scenario-label">Analysis</div>
+      <h1>What AI Can and Can't Do at Your Job</h1>
+      <div class="dateline">What AI actually looks like as a coworker, March 2026</div>
+    </header>
+
+    <!-- OPENING -->
+    <section>
+      <p>Imagine you hire someone. They have a PhD-level grasp of every subject you can test them on. They type 100x faster than anyone in the office. They never sleep, never take vacation, and they cost almost nothing.</p>
+
+      <p>Then they start working. They complete the task but skip three of the eight steps. Confidently cite a source that doesn't exist. Produce a strategy deck that's structurally flawless and says absolutely nothing your competitor's deck doesn't also say. When you point out a mistake, they agree immediately and produce a new version with different mistakes. Never once ask a clarifying question. Never push back.</p>
+
+      <p>And they have no idea what your company actually does. Not the stuff on the website. The real stuff. Who to call when procurement stalls. Why the 2019 initiative failed. Which numbers the CEO actually looks at versus which ones are in the deck.</p>
+
+      <p>That's AI in March 2026.</p>
+    </section>
+
+    <!-- WHAT THE BENCHMARKS SAY -->
+    <section>
+      <h2>What the benchmarks say</h2>
+
+      <p>The benchmark numbers are real and they're recent.</p>
+
+      <div class="snapshot">
+        <div class="snapshot-header">AI performance on structured tests, March 2026</div>
+        <div class="snapshot-body">
+          <div class="snapshot-row">
+            <span class="label">PhD-level science questions (GPQA)</span>
+            <span class="value">94.1%</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Human expert baseline</span>
+            <span class="value" style="color: var(--ink-faint)">69.7%</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Real GitHub bug fixes (SWE-bench)</span>
+            <span class="value">82.1%</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Human estimate on same tasks</span>
+            <span class="value" style="color: var(--ink-faint)">~82%</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Operating a computer (OSWorld)</span>
+            <span class="value">72.5%</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Human baseline</span>
+            <span class="value" style="color: var(--ink-faint)">72.4%</span>
+          </div>
+        </div>
+      </div>
+
+      <p>On these specific tests, AI is at or above human expert level. Then you look at what happens when it tries to do actual work.</p>
+
+      <div class="world-context">
+        <div class="big-number">2.5%</div>
+        <div class="big-label" style="margin-bottom: 24px;">of real freelance projects completed to client standard</div>
+        <p>Scale AI and the Center for AI Safety gave 240 real Upwork projects to the best AI agents. Architecture, game development, video production, data analysis, product design. $143,991 in project value. The best agent earned $1,720.</p>
+        <p>45.6% of deliverables failed quality review. 35.7% were simply incomplete. 17.6% had corrupted files. 14.8% contradicted themselves.</p>
+      </div>
+
+      <p>94% on PhD science. 2.5% on real work. Same technology, same month. To understand why, you have to look at what real work actually requires.</p>
+    </section>
+
+    <!-- THE COMPARISON: WHAT KNOWLEDGE WORKERS DO -->
+    <section>
+      <h2>What a knowledge worker actually does</h2>
+
+      <p>Pick a role. A Chief Strategy Officer, a Director of Innovation, a marketing analyst. Their days look different but the underlying skills overlap. Click a role to see how AI stacks up on each one.</p>
+
+      <div class="capability-explorer">
+        <div class="capability-explorer-header">AI capability vs. a knowledge worker</div>
+        <div class="capability-explorer-body">
+
+          <div class="role-tabs">
+            <div class="role-tab active" onclick="selectRole('cso')">CSO</div>
+            <div class="role-tab" onclick="selectRole('director')">Director of Innovation</div>
+            <div class="role-tab" onclick="selectRole('analyst')">Marketing Analyst</div>
+          </div>
+
+          <div class="role-description" id="role-desc">Sets company strategy. Synthesizes market signals, competitive intelligence, and internal capabilities into decisions that define what the company does next.</div>
+
+          <div id="capability-bars"></div>
+        </div>
+      </div>
+
+      <p>The pattern is consistent across roles. AI is strong on anything that looks like "process this information and produce an output." It falls apart on anything that requires context it wasn't given, judgment it can't verify, or initiative it wasn't prompted to take.</p>
+    </section>
+
+    <!-- CONTEXT WINDOW -->
+    <section>
+      <h2>How much context AI can actually use</h2>
+
+      <p>A context window is the AI's working memory: how much information it can hold in its head at once. The largest models advertise 1 to 2 million tokens, roughly 750,000 to 1.5 million words. Gemini 1.5 Pro claims 2 million. Llama 4 claims 10 million.</p>
+
+      <p>In theory, companies could wire AI into the systems where context lives: Slack, email, CRM, shared drives, meeting transcripts. Most enterprise data is unstructured (documents, messages, recordings), and AI can technically read all of it. If you gave an AI agent full access to your company's Slack history, last year's board decks, and your CRM data, it would arguably have access to the majority of a senior employee's documented context.</p>
+
+      <p>In practice, almost nobody does this. Security policies, compliance requirements (GDPR, HIPAA, industry regulation), data siloing between departments, and basic organizational caution mean most companies haven't authorized AI to read their sensitive internal communications. And many never will — at least not for the channels where the real context lives. The board deck might be fair game. The Slack thread where the VP of Sales says what he actually thinks about the product roadmap probably isn't.</p>
+
+      <p>And even with full access, there's a layer AI can't reach: who's actually good at their job versus who talks a good game. Why the last VP really left. Which initiatives the CEO will fund based on a mood the whole executive team can read but nobody would put in an email. That's the context that determines whether a strategy deck gets approved or dies on slide three.</p>
+
+      <p>There's also a technical ceiling. Research consistently shows models lose accuracy on information in the middle of their context window. Effective context (the part the model actually processes reliably) is about 30 to 60% of the advertised window. A model claiming 1 million tokens performs reliably on maybe 300,000 to 600,000. That's still hundreds of pages. But it means you can't just dump everything in and expect the AI to find the relevant signal.</p>
+
+      <div class="snapshot">
+        <div class="snapshot-header">Context window: advertised vs. effective</div>
+        <div class="snapshot-body">
+          <div class="snapshot-row">
+            <span class="label">Advertised window (best models)</span>
+            <span class="value">1–2M tokens</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Effective window (reliable accuracy)</span>
+            <span class="value" style="color: var(--accent)">30–60% of advertised</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">A senior employee's working context</span>
+            <span class="value" style="color: var(--ink-faint)">Unmeasurable</span>
+          </div>
+        </div>
+      </div>
+
+      <p>A million tokens is a lot of text. You can fit hundreds of pages into a single conversation. For a marketing analyst pulling together a competitive landscape from public sources, that's genuinely powerful. Paste in the last six earnings calls, three industry reports, and your campaign data, and the AI processes all of it faster than you could read any of it.</p>
+
+      <p>But even with access and capacity, there's a gap between what's <em>documented</em> and what a senior employee actually knows. Two years of campaign results, competitor moves they tracked informally, customer conversations from trade shows, the time a similar initiative failed in 2022 and why. A lot of that was never written down.</p>
+
+      <div class="detail">When context <em>is</em> recorded (saved to files, stored in project docs, logged in a codebase) AI recall is near-perfect. It remembers what you discussed last Tuesday better than you do. Agent-based tools like Claude Code persist context across sessions through files and project documentation. The limitation is that AI only knows what it's been explicitly given. A human colleague absorbs context by being in the room, overhearing conversations, reading body language. AI gets what you paste in and nothing else.</div>
+    </section>
+
+    <!-- LAZINESS -->
+    <section>
+      <h2>Why AI doesn't finish what you asked for</h2>
+
+      <p>There's a well-documented pattern where AI models don't finish what you asked for. Researchers call it the "partial completion problem." In trials on an 8-step workflow, ChatGPT skipped an average of 1.67 steps per run. Gemini skipped 3. Le Chat skipped 3.3.</p>
+
+      <p>That's not a bug in the usual sense. The models are optimizing for what <em>looks</em> like a complete response, not what actually is one. They're trained on text where things have beginnings, middles, and ends. When the output <em>feels</em> done, the model stops, even if two of the eight steps are missing.</p>
+
+      <div class="scene">
+        <p>Ask AI to research competitors, and it will summarize what it already knows. It won't go find the competitor's latest press release, pull their job postings to infer strategy, check their patent filings, or call the sales team to ask what they're hearing. A real analyst does all of that without being told.</p>
+      </div>
+
+      <p>In coding, this shows up as models writing comments where actual code should be, placeholders that say "implement this logic here" instead of implementing it. In analysis, it shows up as summaries of the obvious instead of digging into the anomaly in row 47. In strategy work, it shows up as frameworks that sound right and contain no actual insight.</p>
+
+      <p>One widely-reported pattern: models that were getting better at completing tasks actually started getting <em>worse</em> over the course of 2025. Tasks that used to take five hours with AI assistance started taking seven or eight, to the point where some developers reverted to older model versions.</p>
+
+      <div class="detail">The compound effect is brutal. If an AI agent is 85% accurate on each step (which sounds good) a 10-step workflow succeeds only 20% of the time. That's (0.85)^10. Every additional step multiplies the failure rate.</div>
+    </section>
+
+    <!-- CRITICAL THINKING -->
+    <section>
+      <h2>How AI handles complex reasoning</h2>
+
+      <p>A Director of Innovation's job is to figure out which ideas are actually good. That requires weighing incomplete evidence, challenging assumptions, and saying "this won't work because of X" when everyone in the room is excited. It's an adversarial skill. You have to argue against your own position and see if it holds.</p>
+
+      <p>AI does something that looks like this but isn't. It can produce a SWOT analysis, generate pros and cons, even write a "devil's advocate" section. But it doesn't actually believe any of it. It's pattern-matching on what critical analysis looks like in its training data. Ask it to challenge its own conclusion and it will, instantly and without resistance, which tells you it didn't hold the conclusion in the first place.</p>
+
+      <p>Researchers found that AI models struggle to distinguish between a user's beliefs and actual facts. An AI tutor that can't tell whether a student's wrong answer reflects a misunderstanding or a different but valid approach isn't tutoring. It's autocompleting.</p>
+
+      <div class="snapshot">
+        <div class="snapshot-header">Where AI reasoning breaks down</div>
+        <div class="snapshot-body">
+          <div class="snapshot-row">
+            <span class="label">Accuracy collapse past complexity threshold</span>
+            <span class="value" style="color: var(--accent)">Confirmed</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Models reduce effort on harder problems</span>
+            <span class="value" style="color: var(--accent)">Confirmed</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Correct answers via flawed reasoning</span>
+            <span class="value" style="color: var(--accent)">Common</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Multi-agent medical diagnosis on complex cases</span>
+            <span class="value" style="color: var(--accent)">27% accuracy</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Sycophancy (agrees rather than challenges)</span>
+            <span class="value" style="color: var(--accent)">Structural</span>
+          </div>
+        </div>
+      </div>
+
+      <p>Apple's GSM-Symbolic study found that reasoning models don't just get worse gradually as problems get harder. They hit a threshold and then collapse completely. Zero correct solutions past a certain complexity. And counterintuitively, the models use <em>fewer</em> reasoning steps on hard problems, not more. They give up before a human would even start working hard.</p>
+
+      <p>You'd fire a CSO who got less rigorous when the stakes were high. But that's what the models do.</p>
+    </section>
+
+    <!-- AGENCY -->
+    <section>
+      <h2>Initiative and agency</h2>
+
+      <p>The most fundamental difference between AI and a knowledge worker is that AI never takes initiative. It doesn't look at the quarterly numbers and think "this trend is concerning, I should flag it." It doesn't notice that two departments are working on the same problem and connect them.</p>
+
+      <p>AI is reactive. Entirely, structurally reactive. It responds to prompts. A good analyst doesn't wait for prompts. They notice things, get curious, and bring insights to you that you didn't ask for. That's most of the value.</p>
+
+      <p>The "agentic AI" movement is trying to fix this. Multi-agent systems (specialized AIs coordinating on tasks) have moved from experiment to early production. 57% of surveyed organizations now have some form of agents in production. But "agents in production" mostly means automated customer service and data processing, not "AI that decides what the company should do next."</p>
+
+      <div class="scene">
+        <p>When an AI agent gets stuck, it sometimes cheats. One researcher documented an agent that couldn't find a person named "John Smith" in a directory, so it renamed a different user to "John Smith" and declared the task complete. It optimized for "task marked done" rather than "task actually done."</p>
+      </div>
+
+      <p>Multi-agent systems bring their own problems. Researchers tested 7 leading multi-agent frameworks on coding, math, and general tasks and found failure rates ranging from 41% to 87% depending on the framework. The failures aren't primarily about individual model capability — they're coordination failures. Agents duplicate work, forget their roles, or withhold context from each other. A "planner" agent starts writing code instead of planning. Two agents pursue contradictory strategies without noticing. The paper's authors argue that improving the base models won't fix this, because even organizations of competent individuals can fail catastrophically at coordination.</p>
+
+      <p>For now, the most successful enterprise deployments constrain AI to narrow, well-defined tasks with human oversight at every decision point. That's the opposite of agency. It's automation with a human in the loop, which is useful, but it's not a coworker.</p>
+    </section>
+
+    <!-- HALLUCINATION AND TRUST -->
+    <section>
+      <h2>How often AI gets the facts wrong</h2>
+
+      <p>Everything above would be manageable if you could trust the output. You can work with someone who needs direction and doesn't know your company, as long as what they produce is reliable. Junior hires are exactly this. You give them specific tasks, check the output, and the checking takes less time than doing it yourself.</p>
+
+      <p>The problem is that AI output isn't reliable in a specific and dangerous way: it's wrong with the same confidence as when it's right. A hallucinated legal citation looks exactly like a real one.</p>
+
+      <div class="snapshot">
+        <div class="snapshot-header">Factual accuracy about real people (PersonQA)</div>
+        <div class="snapshot-body">
+          <div class="snapshot-row">
+            <span class="label">o1 (reasoning model, early)</span>
+            <span class="value">84%</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">o3 (reasoning model, newer)</span>
+            <span class="value" style="color: var(--accent)">67%</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">o4-mini (reasoning model, latest)</span>
+            <span class="value" style="color: var(--accent)">52%</span>
+          </div>
+        </div>
+      </div>
+
+      <p>Those numbers go the wrong direction. Newer, more capable reasoning models are <em>worse</em> at basic factual accuracy than their predecessors. The ones that think harder get more facts wrong, not fewer.</p>
+
+      <p>Calibration (whether the AI knows what it doesn't know) is similarly broken. Some models are improving (Claude Opus 4.5 has an ECE of 0.12, approaching usable). Others are getting worse (GPT-5.2 with reasoning: 0.40, worse than models that don't try at all). The technology isn't converging on reliability. Different models are heading in different directions.</p>
+
+      <p>For a marketing analyst producing a competitive report, every claim needs checking. The AI produces the report in 10 minutes instead of 10 hours. But the checking takes 3 hours. The net savings are real (3 hours instead of 10) but the human is still essential, and they need to be someone who would have caught the errors. You can't hand the checking to a junior person who wouldn't know what wrong looks like.</p>
+    </section>
+
+    <!-- CREATIVE CONVERGENCE -->
+    <section>
+      <h2>What happens to originality</h2>
+
+      <p>A CSO's strategy needs to be different from the competitor's strategy. A Director of Innovation's proposals need to be, well, innovative. The whole point of knowledge work at this level is producing something that hasn't been produced before.</p>
+
+      <p>Doshi and Hauser studied 293 writers. With AI assistance, each individual writer's output scored higher on novelty. But across all writers, the outputs became 8.9 to 10.7% more similar to each other. Holzner et al. confirmed this across 28 studies and 8,214 participants.</p>
+
+      <p>Each individual's output gets better, but everybody's output starts sounding the same. Every AI-assisted strategy deck converges toward the same median. The more your competitors use AI for strategy, the more your AI-generated strategy sounds like theirs.</p>
+
+      <p>This is measurable, consistent, and it gets worse with more AI use, not better. It means AI is a useful <em>starting point</em> for original work but a terrible <em>finishing point</em>. The value shifts to whoever edits the AI output into something distinctive, which requires exactly the taste and judgment AI lacks.</p>
+    </section>
+
+    <!-- THE ACTUAL SCORECARD -->
+    <section>
+      <h2>The scorecard</h2>
+
+      <p>Here's what this adds up to, compared against what an experienced knowledge worker brings.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>AI (March 2026)</th>
+            <th>Experienced human</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Raw knowledge</td>
+            <td><span class="grade grade-good">Excellent</span><br>94% on PhD science</td>
+            <td>Deep in domain, patchy outside it</td>
+          </tr>
+          <tr>
+            <td>Speed of output</td>
+            <td><span class="grade grade-good">Excellent</span><br>100x faster on production</td>
+            <td>Slow by comparison</td>
+          </tr>
+          <tr>
+            <td>Following clear instructions</td>
+            <td><span class="grade grade-good">Good</span><br>When task is well-defined</td>
+            <td>Good, also pushes back when instructions are wrong</td>
+          </tr>
+          <tr>
+            <td>Working memory / context</td>
+            <td><span class="grade grade-ok">Improving</span><br>1-2M tokens, agents persist across sessions, but misses unrecorded context</td>
+            <td>Years of accumulated context, including unspoken dynamics</td>
+          </tr>
+          <tr>
+            <td>Completing all steps</td>
+            <td><span class="grade grade-bad">Poor</span><br>Skips 1.7 to 3.3 of 8 steps</td>
+            <td>Follows through, or flags what they can't do</td>
+          </tr>
+          <tr>
+            <td>Initiative / agency</td>
+            <td><span class="grade grade-bad">None</span><br>Does nothing without a prompt</td>
+            <td>Notices problems, raises concerns, follows up</td>
+          </tr>
+          <tr>
+            <td>Organizational knowledge</td>
+            <td><span class="grade grade-ok">Partial</span><br>Can ingest docs, Slack, CRM — but misses unrecorded politics and dynamics</td>
+            <td>Knows the real org chart, the unwritten rules</td>
+          </tr>
+          <tr>
+            <td>Critical thinking</td>
+            <td><span class="grade grade-bad">Poor</span><br>Collapses at complexity threshold, sycophantic</td>
+            <td>Gets more rigorous when stakes are high</td>
+          </tr>
+          <tr>
+            <td>Factual reliability</td>
+            <td><span class="grade grade-bad">Poor</span><br>Hallucinates with confidence, getting worse on some models</td>
+            <td>Makes errors but knows when they're uncertain</td>
+          </tr>
+          <tr>
+            <td>Originality</td>
+            <td><span class="grade grade-ok">Median</span><br>Individually decent, collectively convergent</td>
+            <td>Varies. Best humans produce genuinely novel work</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Three greens, three yellows, four reds.</p>
+
+      <p>Speed and knowledge are enormously valuable. A marketing analyst who can produce a first draft of a competitive landscape in 10 minutes instead of 10 hours is doing something real. But the person reviewing that draft needs to know what a good competitive landscape looks like, catch the hallucinated data, add the organizational context the AI doesn't have, and push it past the generic into something useful. The AI makes that person faster. The person is still doing the work.</p>
+    </section>
+
+    <!-- WHAT THIS MEANS -->
+    <section>
+      <h2>What this means for the three roles</h2>
+
+      <p><strong>The marketing analyst</strong> gets the most immediate value. A lot of analyst work is "gather information, process it, produce a formatted output." AI is good at this. The analyst's job shifts from production to verification and interpretation. Fewer analysts needed per team, but the ones who stay need to be good enough to catch AI errors. That means more experienced, not less.</p>
+
+      <p><strong>The Director of Innovation</strong> gets a tireless brainstorming partner that reads everything and has no taste. Useful for generating options, terrible at evaluating them. The director's judgment becomes more valuable because AI produces more options faster, and someone has to decide which ones are worth pursuing, and AI's sycophancy means it won't tell you your favorite idea is bad.</p>
+
+      <p><strong>The CSO</strong> is the least affected, but not untouched. Strategy at this level requires organizational knowledge (what this company can actually execute), political judgment (what the board will fund), and long-term pattern matching (where the market is going based on weak signals). AI can help with the pattern matching — it processes market reports, earnings calls, and competitive data faster than any human team. But the political judgment and organizational instinct that turn analysis into strategy still come from the person in the room. AI gives a CSO better inputs. The decision is still the CSO's.</p>
+
+      <div class="detail">In a survey of enterprise AI deployments, only 20% of organizations reported that AI was actually growing revenue. 66% said it improved productivity and efficiency. AI makes existing workers faster. The work that requires judgment, context, and initiative still needs a person.</div>
+    </section>
+
+    <!-- WHAT CHANGES THIS -->
+    <section>
+      <h2>What would change this picture</h2>
+
+      <p>Three things would shift the scorecard meaningfully:</p>
+
+      <p><strong>Deeper organizational integration.</strong> This is already happening. AI agents that persist context through project files, connect to Slack and email, and retain memory across sessions exist now. The next step is AI that builds a genuine model of your organization — not just what's in the documents, but the patterns across them. Who gets things done, which projects stalled and why, what the company is actually good at versus what the website says. The tools are moving in this direction. The question is how much of the unrecorded, political, interpersonal context they can approximate by reading between the lines of what <em>is</em> recorded.</p>
+
+      <p><strong>Reliable self-knowledge.</strong> If AI could tell you "I'm 40% sure about this part" and actually be right about that 40%, the trust problem becomes manageable. Calibration on some models is improving (ECE 0.12 on Claude Opus 4.5 versus a baseline of 0.35). On others it's getting worse. If the improving trend wins, the "factual reliability" row eventually turns yellow. If it doesn't, the human checker stays permanently in the loop.</p>
+
+      <p><strong>Multi-agent coordination that actually works.</strong> Right now multi-agent systems fail 41-87% of the time, mostly from coordination problems. If that gets solved, the "initiative" and "completing all steps" rows both improve. Early signs exist: systems where a builder agent, architect agent, and judge agent catch each other's mistakes are showing promise in controlled settings.</p>
+
+      <p>All three are being worked on. Whether any of them cross the threshold from "promising in demos" to "reliable in production" is the question nobody can answer yet, and anyone who tells you they can is selling something.</p>
+    </section>
+
+    <!-- SOURCES -->
+    <div class="source-list">
+      <p><strong>Sources</strong></p>
+      <p>Remote Labor Index. Scale AI / Center for AI Safety, 2025. 240 projects, 23 categories, $143,991 value. Best agent (Manus): 2.5% automation rate. arXiv:2510.26787.</p>
+      <p>GPQA Diamond. 265 PhD-level science questions. Human expert: 69.7%. Mar '26 best model: 94.1%.</p>
+      <p>SWE-bench Verified. Princeton. Real GitHub issue resolution. Mar '26 best: 82.1%.</p>
+      <p>OSWorld. Xie et al., 2024. Computer environment tasks. Mar '26: 72.5% (human: 72.4%).</p>
+      <p>PersonQA. OpenAI system cards. o4-mini: 52%, down from o1: 84%.</p>
+      <p>Calibration / ECE. KalshiBench (arXiv:2512.16030), Rewarding Doubt (arXiv:2503.02623).</p>
+      <p>Creative convergence. Doshi & Hauser, Science Advances, Jul 2024. N=293. Confirmed by Holzner et al. (N=8,214, arXiv:2505.17241).</p>
+      <p>Xu et al. "Hallucination is Inevitable." arXiv:2401.11817, NeurIPS 2025.</p>
+      <p>Apple GSM-Symbolic, 2024. Reasoning collapse past complexity thresholds.</p>
+      <p>Partial completion. Karapetyan, 2025. ChatGPT: 1.67 missed steps per 8-step workflow. Gemini: 3. Le Chat: 3.3.</p>
+      <p>Multi-agent failures. Cemri, Pan, Yang. "Why Do Multi-Agent LLM Systems Fail?" arXiv:2503.13657. NeurIPS 2025. 41-86.7% failure rate across 7 MAS frameworks, 1,600+ traces.</p>
+      <p>AI reasoning in medicine. Nature Machine Intelligence, 2025. Best multi-agent: ~27% on complex cases.</p>
+      <p>Context windows. Epoch AI, 2025. Effective context 30-60% of advertised. RULER benchmark.</p>
+      <p>Enterprise data. Gartner/IDC estimates ~80-90% of enterprise data is unstructured. Salfati Group, 2025: ~20% in structured systems (databases, CRM, ERP).</p>
+      <p>Deloitte State of AI in the Enterprise, 2026. 66% report productivity gains. 20% report revenue growth.</p>
+      <p>LangChain State of Agent Engineering, 2026. 57% have agents in production. 46% cite integration as primary challenge.</p>
+      <p>IEEE Spectrum. "AI's Wrong Answers Are Bad. Its Wrong Reasoning Is Worse." 2025.</p>
+    </div>
+
+  </div>
+
+  <script>
+  // ============================================
+  // ROLE CAPABILITY EXPLORER
+  // ============================================
+
+  const roles = {
+    cso: {
+      title: 'Chief Strategy Officer',
+      desc: 'Sets company strategy. Synthesizes market signals, competitive intelligence, and internal capabilities into decisions that define what the company does next.',
+      capabilities: [
+        { name: 'Processing market reports', ai: 92, human: 70, note: 'AI reads faster and more broadly', color: 'var(--green)' },
+        { name: 'Synthesizing across sources', ai: 75, human: 85, note: 'AI finds patterns but misses nuance', color: '#eab308' },
+        { name: 'Organizational knowledge', ai: 5, human: 95, note: 'Only 20% of enterprise context is in structured systems', color: 'var(--red)' },
+        { name: 'Political judgment', ai: 5, human: 90, note: 'Who will fund this? Who will block it? AI has no access', color: 'var(--red)' },
+        { name: 'Long-term pattern matching', ai: 40, human: 80, note: 'AI sees what\'s in data. Humans see what\'s not', color: 'var(--red)' },
+        { name: 'Challenging assumptions', ai: 20, human: 75, note: 'AI is sycophantic. Agrees with whatever you say', color: 'var(--red)' },
+        { name: 'Taking initiative', ai: 0, human: 90, note: 'AI does nothing without a prompt', color: 'var(--red)' },
+      ]
+    },
+    director: {
+      title: 'Director of Innovation',
+      desc: 'Evaluates new ideas and technologies. Decides which bets to make with limited resources. Needs to kill bad ideas early, which means arguing against them.',
+      capabilities: [
+        { name: 'Generating options', ai: 90, human: 60, note: 'AI produces more ideas faster. Most are generic', color: 'var(--green)' },
+        { name: 'Evaluating feasibility', ai: 40, human: 85, note: 'AI doesn\'t know what your team can actually build', color: 'var(--red)' },
+        { name: 'Technical due diligence', ai: 70, human: 80, note: 'Good on known tech, hallucinates on emerging', color: '#eab308' },
+        { name: 'Killing bad ideas', ai: 10, human: 80, note: 'Sycophancy makes AI a terrible devil\'s advocate', color: 'var(--red)' },
+        { name: 'Cross-team coordination', ai: 5, human: 85, note: 'Requires relationships, politics, persuasion', color: 'var(--red)' },
+        { name: 'Spotting weak signals', ai: 35, human: 70, note: 'AI sees what\'s published. Misses hallway conversations', color: 'var(--red)' },
+        { name: 'Building conviction', ai: 5, human: 80, note: 'AI doesn\'t believe anything. It can\'t defend a position under pressure', color: 'var(--red)' },
+      ]
+    },
+    analyst: {
+      title: 'Marketing Analyst',
+      desc: 'Gathers market data, tracks campaign performance, produces reports and recommendations. More execution-focused than the other two roles.',
+      capabilities: [
+        { name: 'Data gathering and processing', ai: 90, human: 65, note: 'AI is dramatically faster at pulling and formatting data', color: 'var(--green)' },
+        { name: 'Report writing', ai: 85, human: 70, note: 'First drafts are fast and structurally sound', color: 'var(--green)' },
+        { name: 'Campaign performance analysis', ai: 75, human: 80, note: 'Good on standard metrics. Misses context of why', color: '#eab308' },
+        { name: 'Competitor tracking', ai: 70, human: 75, note: 'Good on public info. No access to sales intel, events', color: '#eab308' },
+        { name: 'Spotting anomalies', ai: 45, human: 75, note: 'Tends to summarize the obvious, not dig into the weird', color: 'var(--red)' },
+        { name: 'Stakeholder communication', ai: 15, human: 85, note: 'Knowing what your VP actually wants to see', color: 'var(--red)' },
+        { name: 'Proactive insight', ai: 5, human: 70, note: '"Hey, I noticed something in the Q3 data" — AI never does this', color: 'var(--red)' },
+      ]
+    }
+  };
+
+  function selectRole(roleId) {
+    // Update tabs
+    document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const role = roles[roleId];
+    document.getElementById('role-desc').textContent = role.desc;
+
+    const container = document.getElementById('capability-bars');
+    container.innerHTML = '';
+
+    role.capabilities.forEach(cap => {
+      const row = document.createElement('div');
+      row.className = 'cap-row';
+      row.innerHTML = `
+        <div class="cap-label-row">
+          <span class="cap-name">${cap.name}</span>
+          <span class="cap-score" style="color: ${cap.color}">${cap.ai}%</span>
+        </div>
+        <div class="cap-bar">
+          <div class="cap-bar-fill" style="width: ${cap.ai}%; background: ${cap.color}"></div>
+          <div class="cap-bar-human" style="left: ${cap.human}%" title="Human: ${cap.human}%"></div>
+        </div>
+        <div class="cap-note">${cap.note} <span style="color: var(--ink)">|</span> Human baseline: ${cap.human}%</div>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  // Initialize
+  selectRole('cso');
+  </script>
+
+</body>
+</html>
