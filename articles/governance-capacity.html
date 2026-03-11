@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Governance Capacity During the AI Transition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --paper: #fdfcfa;
+      --paper-dark: #f8f7f5;
+      --ink: #1a1a1a;
+      --ink-light: #6b7280;
+      --ink-faint: #9ca3af;
+      --rule: #e5e5e5;
+      --rule-dark: #d4d4d4;
+      --accent: #c2410c;
+      --accent-light: #e5e7eb;
+      --negative: #b91c1c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.7;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    header {
+      margin-bottom: 64px;
+      border-bottom: 1px solid var(--rule-dark);
+      padding-bottom: 32px;
+    }
+
+    .topic-label {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 42px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .dateline {
+      font-size: 12px;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    section {
+      margin-bottom: 56px;
+    }
+
+    h2 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 26px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin-bottom: 20px;
+      color: var(--ink);
+      line-height: 1.8;
+    }
+
+    .scene {
+      background: var(--paper-dark);
+      padding: 32px;
+      margin: 32px 0;
+      border-left: 3px solid var(--accent);
+    }
+
+    .scene p {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .scene p:last-child {
+      margin-bottom: 0;
+    }
+
+    .snapshot {
+      border: 1px solid var(--rule-dark);
+      margin: 32px 0;
+    }
+
+    .snapshot-header {
+      background: var(--paper-dark);
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--rule-dark);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-light);
+    }
+
+    .snapshot-body {
+      padding: 24px;
+    }
+
+    .snapshot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 15px;
+    }
+
+    .snapshot-row:last-child {
+      border-bottom: none;
+    }
+
+    .snapshot-row .label {
+      color: var(--ink-light);
+      max-width: 65%;
+    }
+
+    .snapshot-row .value {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 18px;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .snapshot-row .value.negative {
+      color: var(--negative);
+    }
+
+    .world-context {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 32px;
+      margin: 40px 0;
+    }
+
+    .world-context h3 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      color: var(--paper);
+    }
+
+    .world-context p {
+      color: rgba(255,255,255,0.8);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .world-context-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .world-stat {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .world-stat:nth-last-child(-n+2) {
+      border-bottom: none;
+    }
+
+    .world-stat .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 4px;
+    }
+
+    .world-stat .value {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 18px;
+    }
+
+    .quote-block {
+      border-left: 2px solid var(--rule);
+      padding-left: 24px;
+      margin: 24px 0;
+    }
+
+    .quote-block .text {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 17px;
+      font-style: italic;
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .quote-block .attr {
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+
+    .caption {
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    .loop {
+      border: 1px solid var(--rule-dark);
+      margin: 32px 0;
+    }
+
+    .loop-header {
+      background: var(--paper-dark);
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--rule-dark);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-light);
+    }
+
+    .loop-body {
+      padding: 24px;
+    }
+
+    .loop-step {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 15px;
+    }
+
+    .loop-step:last-child {
+      border-bottom: none;
+    }
+
+    .loop-step .num {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 14px;
+      color: var(--ink-faint);
+      flex-shrink: 0;
+      width: 20px;
+    }
+
+    .loop-step .desc {
+      color: var(--ink);
+    }
+
+    footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--rule);
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    footer p {
+      color: var(--ink-faint);
+      font-size: 13px;
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 32px; }
+      .world-context-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 2.2cm 2.5cm 2.2cm 2.5cm;
+      }
+
+      body {
+        font-size: 10.5pt;
+        line-height: 1.65;
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
+      }
+
+      .container {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      header {
+        margin-bottom: 36pt;
+        padding-bottom: 18pt;
+      }
+
+      h1 {
+        font-size: 26pt;
+      }
+
+      h2 {
+        font-size: 16pt;
+        page-break-after: avoid;
+      }
+
+      p {
+        orphans: 3;
+        widows: 3;
+        line-height: 1.7;
+      }
+
+      section {
+        margin-bottom: 32pt;
+        page-break-inside: avoid;
+      }
+
+      /* Keep callouts, snapshots, visuals from splitting across pages */
+      .scene,
+      .snapshot,
+      .world-context,
+      .versus,
+      .quote-block,
+      .loop {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      /* Keep headings with their content */
+      h2, h3, .snapshot-header, .loop-header {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      /* Dark panel prints well with exact colors */
+      .world-context {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 24pt;
+        margin: 24pt 0;
+      }
+
+      .scene {
+        background: #f7f7f5;
+        padding: 18pt 20pt;
+        margin: 20pt 0;
+      }
+
+      .snapshot {
+        margin: 20pt 0;
+      }
+
+      .versus {
+        margin: 20pt 0;
+      }
+
+      .loop {
+        margin: 20pt 0;
+      }
+
+      /* Footer on its own flow */
+      footer {
+        margin-top: 36pt;
+        page-break-before: auto;
+      }
+
+      footer p {
+        font-size: 8.5pt;
+        margin-bottom: 4pt;
+        line-height: 1.5;
+      }
+
+      /* Caption sizing for print */
+      .caption {
+        font-size: 8.5pt;
+      }
+
+      /* Tighten snapshot rows for print */
+      .snapshot-row {
+        padding: 8pt 0;
+        font-size: 9.5pt;
+      }
+
+      .snapshot-row .value {
+        font-size: 12pt;
+      }
+
+      /* Loop steps for print */
+      .loop-step {
+        padding: 6pt 0;
+        font-size: 9.5pt;
+      }
+
+      /* Versus items */
+      .versus-item .number {
+        font-size: 28pt;
+      }
+
+      .versus-item .who {
+        font-size: 10pt;
+      }
+
+      .versus-item .role,
+      .versus-item .unit {
+        font-size: 8.5pt;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="topic-label">AI Risk</div>
+      <h1>Governance Capacity During the AI Transition</h1>
+      <div class="dateline">March 2026</div>
+    </header>
+
+    <section>
+      <p>Every plan for managing AI assumes that governments will be functional enough to do the managing. Alignment research assumes regulators will implement findings. Compute governance assumes agencies with technical capacity. International coordination assumes stable domestic politics. Benefit distribution assumes working tax systems and safety nets.</p>
+
+      <p>I've been trying to figure out how much weight that assumption can actually bear, and I think the answer is: less than anyone in the AI safety space is accounting for. The problem isn't just that government is slow. It's that AI may be structurally dismantling the foundations that government runs on.</p>
+    </section>
+
+    <section>
+      <h2>The funding model breaks</h2>
+
+      <p>Start with the most concrete thing. Modern states fund themselves by taxing human labor. Income tax, payroll tax, Social Security contributions, Medicare withholdings. The entire fiscal architecture of government is built on the assumption that humans work and earn wages.</p>
+
+      <p>AI replaces human labor. That's the whole point of it. Every AI-automated task is a task that used to generate income tax, payroll tax, and consumption spending that generated sales tax. As AI adoption scales, the tax base contracts. Not by a little. The Citrini fiscal scenario models federal receipts falling 12% below baseline, with labor's share of GDP dropping from 56% to 46%.</p>
+
+      <p>And the spending side goes the opposite direction. Displaced workers need safety nets, retraining, healthcare, unemployment insurance. Government needs more money to manage the transition at the exact moment it has less money coming in. This isn't a policy choice anyone makes. It's a structural consequence of the technology working as intended.</p>
+
+      <div class="scene">
+        <p>The fiscal problem is worth dwelling on because it doesn't require any assumptions about politics, trust, or institutional failure. If AI displaces labor at scale, government revenue falls mechanically. No one has to make a mistake for this to happen. No one has to lose an election.</p>
+      </div>
+
+      <p>And it gets worse during recessions. Jaimovich and Siu published in the <em>Review of Economics and Statistics</em> that 92% of automation-driven job losses concentrate in the first 12 months of recessions. Companies that were gradually adopting AI suddenly accelerate under economic pressure. Those jobs don't come back when the economy recovers. Gita Gopinath, the IMF's First Deputy Managing Director, described AI as a "crisis amplifier" that could "convert an otherwise ordinary downturn into a much deeper economic crisis." The next recession won't just cut government revenue through the normal cyclical channel. It'll permanently eliminate a chunk of the tax base.</p>
+    </section>
+
+    <section>
+      <h2>The structural mismatches</h2>
+
+      <p>Even if the money problem were solved, government faces structural barriers that money alone can't fix.</p>
+
+      <p><strong>AI is general-purpose. Government is not.</strong> The FDA regulates drugs. The SEC regulates securities. The FTC regulates competition. These agencies exist because the things they regulate are specific and bounded. AI is in healthcare, finance, law, defense, education, transportation, and media simultaneously. No single agency owns it. Every agency is affected by it. The regulatory structure is built for a world where technologies fit into categories, and AI doesn't.</p>
+
+      <p><strong>The information asymmetry is total.</strong> OpenAI, Google, Anthropic, and Meta know more about what their systems can do than any government body will ever know. They have the researchers, the compute, the internal benchmarks, the deployment data. Government regulators are asking companies to self-report on capabilities that the regulators lack the tools to independently verify. And the companies can use AI itself to lobby more effectively, draft regulatory comments, shape public narrative, and optimize their engagement with the political process faster than regulators can read the submissions.</p>
+
+      <p><strong>Democratic timescales and AI timescales are incompatible.</strong> This isn't just "government is slow." Democratic legitimacy requires deliberation. Deliberation requires time. Legislators need to understand what they're voting on. Public comment periods exist for a reason. Oversight hearings take months to organize. None of this is dysfunction; it's how democratic governance is supposed to work. But AI capabilities change on a cycle of weeks to months. By the time a regulatory framework is debated, drafted, commented on, revised, passed, and implemented, the technology has moved on. The EU AI Act took three years. GPT-3 to GPT-4 took two.</p>
+
+      <p><strong>Government can't adopt AI to close the gap.</strong> Private companies adopt new AI tools the week they're released. Government has procurement cycles, security requirements, legacy system integration, union considerations, and public accountability constraints that make rapid adoption nearly impossible. The result is that the capability gap between the regulator and the regulated grows over time. Government gets relatively less competent as the private sector gets relatively more capable. This is a gap that widens by default.</p>
+    </section>
+
+    <section>
+      <h2>Now add TAI</h2>
+
+      <p>Everything above describes what's happening right now, with narrow AI. The structural erosion is already underway. Revenue pressure, speed mismatches, information gaps, adoption asymmetry. These are current problems.</p>
+
+      <p>But the AI safety community isn't primarily worried about narrow AI. They're worried about transformative AI. Systems that can do most or all cognitive work that humans do. And this is where the governance capacity problem goes from concerning to something I don't have a good word for.</p>
+
+      <p>If TAI arrives while governance is already weakened by everything described above, you have the most consequential technology in human history entering a world where the institutions meant to oversee it have been progressively hollowed out by its precursors. Companies and individuals with access to superintelligent systems. Government agencies that can't update their procurement software.</p>
+
+      <p>Every structural disadvantage gets multiplied. The information asymmetry goes from bad to permanent: you cannot regulate a system that is cognitively superior to every person in your agency. The speed mismatch becomes infinite: a superintelligent system operates on timescales that make legislative deliberation irrelevant. The adoption gap becomes a capability gap of a kind we haven't seen before, where private actors can do things that governments can't even understand, let alone oversee.</p>
+
+      <p>The revenue problem is still there underneath all of this. If TAI displaces most human cognitive labor, the tax base doesn't just shrink. It functionally disappears in its current form. And restructuring taxation (to tax capital, compute, or AI output instead of labor) requires exactly the kind of governance capacity that's been degrading.</p>
+
+      <div class="world-context">
+        <h3>The dependency problem</h3>
+        <div class="world-context-grid">
+          <div class="world-stat">
+            <div class="label">Alignment implementation</div>
+            <div class="value">Requires regulators who can evaluate AI systems</div>
+          </div>
+          <div class="world-stat">
+            <div class="label">Compute governance</div>
+            <div class="value">Requires agencies with technical monitoring capacity</div>
+          </div>
+          <div class="world-stat">
+            <div class="label">International coordination</div>
+            <div class="value">Requires domestically stable governments</div>
+          </div>
+          <div class="world-stat">
+            <div class="label">Tax restructuring</div>
+            <div class="value">Requires functional legislatures and tax agencies</div>
+          </div>
+        </div>
+      </div>
+      <p class="caption">Every major intervention for managing TAI depends on governance capacity that is currently being eroded by the AI that precedes it.</p>
+    </section>
+
+    <section>
+      <h2>Gradual disempowerment</h2>
+
+      <p>Kulveit, Douglas, and colleagues published a position paper at ICML 2025 arguing that humanity faces existential risk from what they call gradual disempowerment. The idea: you don't need a rogue superintelligence scenario. Incremental AI improvements progressively erode human influence over critical systems through ordinary competitive displacement. Each step is individually rational. Organizations that adopt AI outcompete those that don't. Human oversight roles shrink to rubber-stamping. The process is self-reinforcing, and nobody is in a position to stop it because each individual decision makes local sense.</p>
+
+      <div class="quote-block">
+        <div class="text">"No one has a concrete plausible plan for stopping gradual human disempowerment."</div>
+        <div class="attr">Kulveit et al. (2025), ICML</div>
+      </div>
+
+      <p>80,000 Hours treats this as a distinct problem profile alongside misalignment. What makes it hard is that it requires no adversarial AI behavior. No scheming. No deception. Just economics.</p>
+
+      <p>Governance capacity degradation is one of the central mechanisms through which gradual disempowerment happens. The sequence is: AI outcompetes human labor, government revenue falls, institutional capacity degrades, the weakened institutions can't coordinate a response to AI deployment, so AI deployment accelerates without meaningful oversight, which displaces more human labor, which further degrades government revenue. At each turn, the humans nominally in charge have less ability to change the trajectory. By the time TAI arrives, the institutions that could theoretically provide oversight may be too degraded to function in that role.</p>
+    </section>
+
+    <section>
+      <h2>What exists, and what doesn't</h2>
+
+      <p>Some people are adjacent to this problem. Kulveit's paper exists. 80,000 Hours has the problem profile. There's a PNAS study from January 2026 showing that people who perceive AI as labor-replacing become less satisfied with democracy and less politically engaged, even before actual displacement. Gopinath gave the crisis amplifier speech. Brookings has done work linking automation exposure to populist support.</p>
+
+      <p>But as far as I can tell, nobody is working on the specific question of governance capacity as a binding constraint on AI risk management.</p>
+
+      <div class="snapshot">
+        <div class="snapshot-header">Research that doesn't exist</div>
+        <div class="snapshot-body">
+          <div class="snapshot-row">
+            <span class="label">Models of government revenue impact from AI labor displacement</span>
+            <span class="value negative">None</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Threshold analysis: how much capacity loss before governance fails</span>
+            <span class="value negative">None</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Early warning indicators for AI-driven governance degradation</span>
+            <span class="value negative">None</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Strategies for restructuring government funding as labor tax base shrinks</span>
+            <span class="value negative">None</span>
+          </div>
+          <div class="snapshot-row">
+            <span class="label">Analysis of regulatory capacity vs. AI capability growth rates</span>
+            <span class="value negative">None</span>
+          </div>
+        </div>
+      </div>
+
+      <p>The existing governance monitoring frameworks (Fragile States Index, V-Dem, OECD fragility indicators) measure levels, not velocity. They'd tell you a country is fragile. They wouldn't tell you it's becoming fragile fast, or why. None of them track technology-governance interactions, revenue-base erosion from automation, or the widening capability gap between public and private sectors.</p>
+    </section>
+
+    <section>
+      <h2>The question</h2>
+
+      <p>I think the research question that matters most is: under what conditions does AI-driven disruption degrade governance capacity enough to prevent coordinated AI oversight, and what interventions could preserve that capacity before the window closes?</p>
+
+      <p>That question connects public finance, political science, AI governance, and labor economics in ways I haven't seen combined. The historical evidence suggests it matters. Post-Soviet Russia's transition failed not because the reforms were wrong, but because the institutions needed to implement any reforms had disintegrated. State capacity was the binding constraint. The countries that managed technological transitions well (the Nordics during deindustrialization, for instance) were the ones with institutional capacity and fiscal resilience already in place before the shock arrived.</p>
+
+      <p>There's a narrow version of good news in the research. Brookings found that strong social safety nets eliminate the link between automation exposure and populist support. Countries with high institutional trust, universal welfare, and competitive public sector compensation are more resilient. Recovery from institutional decay can also be nonlinear: transparency above a critical threshold can trigger accelerating reform.</p>
+
+      <p>But all of those interventions require governance capacity to implement. If the capacity degrades past some point, the institutions can't implement the things that would save them. That's the trap, and I don't think anyone is modeling where that point is.</p>
+
+      <p>The AI safety community is doing important work on alignment, interpretability, and capability monitoring. But all of that work implicitly assumes that when results are ready, there will be a functioning government capable of acting on them. That assumption deserves its own research program, because right now nobody is checking whether it holds.</p>
+    </section>
+
+    <footer>
+      <p><strong>Sources</strong></p>
+      <p>Kulveit, Douglas, Ammann, Turan, Krueger & Duvenaud (2025). Position: Humanity Faces Existential Risk from Gradual Disempowerment. <em>ICML</em>, PMLR 267.</p>
+      <p>Gopinath, G. (2024). Crisis Amplifier? How to Prevent AI from Worsening the Next Economic Downturn. Speech at the WTO, Geneva.</p>
+      <p>Jaimovich & Siu (2020). Job Polarization and Jobless Recoveries. <em>Review of Economics and Statistics</em>, 102(1).</p>
+      <p>Granulo, Raff & Fuchs (2026). Perceiving AI as labor-replacing reduces democratic legitimacy and political engagement. <em>PNAS</em>, 123(4).</p>
+      <p>Georgieva, K. (2024). AI Will Transform the Global Economy. <em>IMF Blog</em>.</p>
+      <p>Gonzalez-Rostani (2024). Engaged robots, disengaged workers. <em>Economics & Politics</em>, 36(3).</p>
+      <p>Brookings Institution (2024). Does automation increase support for the far right?</p>
+      <p>V-Dem Institute. Democracy Report 2025.</p>
+      <p>Fund for Peace. Fragile States Index. OECD States of Fragility 2025.</p>
+    </footer>
+  </div>
+</body>
+</html>

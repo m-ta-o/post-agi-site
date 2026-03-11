@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post-AGI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --paper: #fdfcfa;
+      --paper-dark: #f8f7f5;
+      --ink: #1a1a1a;
+      --ink-light: #6b7280;
+      --ink-faint: #9ca3af;
+      --rule: #e5e5e5;
+      --rule-dark: #d4d4d4;
+      --accent: #c2410c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER */
+    .site-header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px 40px;
+      border-bottom: 1px solid var(--rule-dark);
+    }
+
+    .masthead {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .site-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    .site-nav a {
+      font-size: 13px;
+      color: var(--ink-light);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .site-nav a:hover {
+      color: var(--ink);
+    }
+
+    .site-description {
+      margin-top: 16px;
+      font-size: 15px;
+      color: var(--ink-light);
+      max-width: 480px;
+      line-height: 1.5;
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* FEATURED ARTICLE */
+    .featured {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .featured-label {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .featured h2 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 38px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .featured h2 a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .featured h2 a:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+
+    .featured-meta {
+      font-size: 13px;
+      color: var(--ink-faint);
+      margin-bottom: 20px;
+    }
+
+    .featured-excerpt {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--ink);
+      max-width: 640px;
+    }
+
+    .featured-stat {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 12px;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 16px 24px;
+      margin-top: 24px;
+    }
+
+    .featured-stat .number {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 32px;
+      font-weight: 500;
+    }
+
+    .featured-stat .label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      max-width: 200px;
+      line-height: 1.4;
+    }
+
+    /* ARTICLE LIST */
+    .section-header {
+      padding: 40px 0 24px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-light);
+    }
+
+    .article-list {
+      list-style: none;
+    }
+
+    .article-item {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: baseline;
+    }
+
+    .article-item:last-child {
+      border-bottom: none;
+    }
+
+    .article-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+
+    .article-title a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .article-title a:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .article-description {
+      font-size: 14px;
+      color: var(--ink-light);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .article-meta {
+      font-size: 12px;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+
+    .article-category {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    /* TOPICS GRID */
+    .topics-section {
+      padding: 56px 0;
+      border-top: 1px solid var(--rule-dark);
+      margin-top: 40px;
+    }
+
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--rule-dark);
+      margin-top: 24px;
+    }
+
+    .topic-card {
+      background: var(--paper);
+      padding: 32px;
+    }
+
+    .topic-card h3 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .topic-card p {
+      font-size: 14px;
+      color: var(--ink-light);
+      line-height: 1.5;
+    }
+
+    .topic-card .count {
+      font-size: 12px;
+      color: var(--ink-faint);
+      margin-top: 12px;
+    }
+
+    /* FOOTER */
+    .site-footer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px;
+      border-top: 1px solid var(--rule-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--ink-light);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--ink);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .masthead {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .featured h2 {
+        font-size: 28px;
+      }
+
+      .article-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .topics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .site-footer {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="masthead">
+      <a href="/" class="site-title">Post-AGI</a>
+      <nav class="site-nav">
+        <a href="/archive">Archive</a>
+        <a href="/about">About</a>
+        <a href="/subscribe">Subscribe</a>
+      </nav>
+    </div>
+    <p class="site-description">Essays on AI, labor, and what happens next. Researched, sourced, updated as things change.</p>
+  </header>
+
+  <main class="main">
+
+    <!-- FEATURED -->
+    <article class="featured">
+      <div class="featured-label">Latest</div>
+      <h2><a href="articles/ai-as-coworker.html">What AI Can and Can't Do at Your Job</a></h2>
+      <div class="featured-meta">March 2026</div>
+      <p class="featured-excerpt">Imagine you hire someone. They have a PhD-level grasp of every subject you can test them on. They type 100x faster than anyone in the office. They never sleep, never take vacation, and they cost almost nothing. Sounds perfect. Then they start working.</p>
+      <div class="featured-stat">
+        <span class="number">2.5%</span>
+        <span class="label">of real freelance projects completed to client standard</span>
+      </div>
+    </article>
+
+    <!-- RECENT -->
+    <div class="section-header">Recent</div>
+    <ul class="article-list">
+
+      <li class="article-item">
+        <div>
+          <div class="article-category">Capability</div>
+          <h3 class="article-title"><a href="articles/measuring-ai-progress.html">Measuring AI Progress</a></h3>
+          <p class="article-description">Six dimensions of exponential improvement, tracked empirically.</p>
+        </div>
+        <div class="article-meta">Mar 2026</div>
+      </li>
+
+      <li class="article-item">
+        <div>
+          <div class="article-category">Governance</div>
+          <h3 class="article-title"><a href="articles/governance-capacity.html">Can Institutions Function During the AI Transition?</a></h3>
+          <p class="article-description">Governance capacity is the meta-risk. If institutions fail, no policy intervention can be implemented.</p>
+        </div>
+        <div class="article-meta">Mar 2026</div>
+      </li>
+
+      <li class="article-item">
+        <div>
+          <div class="article-category">Economics</div>
+          <h3 class="article-title"><a href="articles/ghost-gdp.html">Ghost GDP</a></h3>
+          <p class="article-description">Where does $15 trillion of AI growth actually come from? I read the methodology sections.</p>
+        </div>
+        <div class="article-meta">Mar 2026</div>
+      </li>
+
+      <li class="article-item">
+        <div>
+          <div class="article-category">Scenario</div>
+          <h3 class="article-title"><a href="articles/next-model-shock.html">Thirteen Barriers to AI Replacing Knowledge Work</a></h3>
+          <p class="article-description">The things that might slow it down. Evaluated one by one.</p>
+        </div>
+        <div class="article-meta">Mar 2026</div>
+      </li>
+
+      <li class="article-item">
+        <div>
+          <div class="article-category">Displacement</div>
+          <h3 class="article-title"><a href="articles/industry-displacement-data.html">Industry Data on AI Job Displacement</a></h3>
+          <p class="article-description">Graphic design, illustration, writing, translation. What the numbers actually show.</p>
+        </div>
+        <div class="article-meta">Jan 2026</div>
+      </li>
+
+      <li class="article-item">
+        <div>
+          <div class="article-category">Displacement</div>
+          <h3 class="article-title"><a href="articles/2026-displacement-scenario.html">2026 Displacement Scenario</a></h3>
+          <p class="article-description">Organizational inertia varies by worker type, not sector. A new taxonomy.</p>
+        </div>
+        <div class="article-meta">Jan 2026</div>
+      </li>
+
+    </ul>
+
+    <!-- TOPICS -->
+    <section class="topics-section">
+      <div class="section-header">Topics</div>
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3>Displacement & Labor</h3>
+          <p>Who gets displaced, how fast, and what the data shows so far.</p>
+          <div class="count">8 articles</div>
+        </div>
+        <div class="topic-card">
+          <h3>Governance & Institutions</h3>
+          <p>Can democracies, regulators, and social systems keep up?</p>
+          <div class="count">3 articles</div>
+        </div>
+        <div class="topic-card">
+          <h3>AI Capabilities</h3>
+          <p>What AI can actually do. Benchmarks vs. real-world performance.</p>
+          <div class="count">4 articles</div>
+        </div>
+        <div class="topic-card">
+          <h3>Economics & GDP</h3>
+          <p>Growth forecasts, labor share, and who captures the gains.</p>
+          <div class="count">3 articles</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-text">© 2026</div>
+    <div class="footer-links">
+      <a href="/rss.xml">RSS</a>
+      <a href="https://twitter.com/">Twitter</a>
+      <a href="mailto:">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>

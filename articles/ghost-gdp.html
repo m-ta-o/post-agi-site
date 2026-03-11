@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost GDP</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f3ef;
+            --text: #1a1a1a;
+            --text-secondary: #555;
+            --accent: #c41a1a;
+            --border: #1a1a1a;
+            --code-bg: #e8e5df;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'IBM Plex Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; font-size: 17px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+        header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid var(--border); }
+        h1 { font-family: 'IBM Plex Mono', monospace; font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.2; letter-spacing: -0.02em; }
+        .subtitle { color: var(--text-secondary); margin-top: 0.5rem; }
+        .dateline { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--text-secondary); margin-top: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        section { margin-bottom: 3.5rem; }
+        .label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 1.5rem; }
+        p { margin: 0 0 1.25rem; }
+        h2 { font-family: 'IBM Plex Mono', monospace; font-size: 1.1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin: 3.5rem 0 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+
+        /* Stat callouts */
+        .stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 20px 0; border-bottom: 1px solid #ddd; }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { font-size: 14px; color: var(--text-secondary); max-width: 65%; }
+        .stat-value { font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 500; text-align: right; }
+        .stat-source { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+        .single-stat { text-align: center; padding: 48px 24px; background: var(--code-bg); margin-bottom: 16px; }
+        .single-stat .number { font-family: 'IBM Plex Mono', monospace; font-size: 64px; font-weight: 500; line-height: 1; margin-bottom: 16px; }
+        .single-stat .desc { font-size: 14px; color: var(--text-secondary); max-width: 100%; }
+
+        /* Versus / comparison */
+        .versus { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #ddd; margin-bottom: 16px; }
+        .versus-item { background: white; padding: 32px; }
+        .versus-item .who { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+        .versus-item .role { font-size: 11px; color: var(--text-secondary); margin-bottom: 16px; }
+        .versus-item .number { font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 500; line-height: 1.2; }
+        .versus-item .unit { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* Comparison table */
+        .compare-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; table-layout: fixed; }
+        .compare-table th { font-family: 'IBM Plex Mono', monospace; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 12px 16px; border-bottom: 2px solid var(--border); background: var(--code-bg); }
+        .compare-table td { padding: 12px 16px; border-bottom: 1px solid #ddd; vertical-align: top; }
+        .compare-table th:first-child, .compare-table td:first-child { width: 18%; }
+        .compare-table th:nth-child(2), .compare-table td:nth-child(2) { width: 36%; }
+        .compare-table th:last-child, .compare-table td:last-child { width: 46%; }
+
+        /* Callout box */
+        .callout { border-left: 3px solid var(--accent); padding: 1.5rem; margin-bottom: 2rem; max-width: 100%; background: rgba(196, 26, 26, 0.05); }
+        .callout p { max-width: 100%; }
+        .callout .attr { font-size: 12px; color: var(--text-secondary); margin-top: 8px; margin-bottom: 0; }
+
+        .divider { height: 2px; background: var(--border); margin: 3.5rem 0; }
+        .caption { font-size: 13px; color: var(--text-secondary); margin-top: 8px; margin-bottom: 32px; max-width: 100%; }
+
+        /* Scenarios */
+        .scenario { padding: 1.5rem; margin-bottom: 1rem; border: 1px solid var(--border); background: white; }
+        .scenario.primary { border-left: 3px solid var(--accent); }
+        .scenario h3 { font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+        .scenario p { max-width: 100%; margin-bottom: 0; }
+
+        /* SVG chart */
+        .chart-container { margin: 32px 0 16px; }
+        .chart-container svg { width: 100%; height: auto; }
+
+        .source-list { font-size: 12px; color: var(--text-secondary); margin-top: 4rem; padding-top: 1.5rem; border-top: 2px solid var(--border); }
+        .source-list p { margin-bottom: 8px; color: var(--text-secondary); font-size: 12px; }
+
+        @media (max-width: 600px) {
+            .versus { grid-template-columns: 1fr; }
+            .single-stat .number { font-size: 48px; }
+            .stat-value { font-size: 20px; }
+            .compare-table { font-size: 13px; }
+            .compare-table td, .compare-table th { padding: 10px 8px; }
+            h1 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <header>
+            <h1>Ghost GDP</h1>
+            <div class="subtitle">Where does $15 trillion of AI growth actually come from?</div>
+            <div class="dateline">March 2026</div>
+        </header>
+
+        <section>
+            <p>McKinsey says AI will add $13&ndash;22 trillion in cumulative value by 2040. PwC says $15.7 trillion by 2030. Goldman Sachs said +7% to global GDP, then quietly noted in February 2026 that AI had contributed "basically zero" to US GDP through 2025.</p>
+
+            <p>I keep staring at these numbers trying to figure out where the money comes from. I mean the actual mechanics. Which line items in GDP go up, and why?</p>
+
+            <p>Because the more I look at the mechanisms, the less they look like GDP growth.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- SECTION 1: THE FORECASTS, OPENED UP -->
+
+        <section>
+            <div class="label">What the forecasts actually assume</div>
+
+            <p>I went and read the methodology sections. Here's what's inside the headline numbers.</p>
+
+            <div style="height: 16px;"></div>
+
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>Forecast</th>
+                        <th>Source of growth</th>
+                        <th>What they assume away</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>McKinsey<br>$13&ndash;22T by 2040</td>
+                        <td>75% from four functions: customer ops, marketing, software engineering, R&amp;D. Task-level automation.</td>
+                        <td>Demand effects are explicitly "out of scope." Assumes displaced workers shift to other activities.</td>
+                    </tr>
+                    <tr>
+                        <td>Goldman Sachs<br>+7% global GDP</td>
+                        <td>Labor cost savings + productivity boost for remaining workers + reemployment of displaced workers in new roles.</td>
+                        <td>Assumes 7% of workers displaced, most find "slightly less productive" new jobs. Based on electricity/PC adoption patterns.</td>
+                    </tr>
+                    <tr>
+                        <td>PwC<br>$15.7T by 2030</td>
+                        <td>$6.6T from productivity (automation). $9.1T from consumption effects (better/cheaper products people want to buy).</td>
+                        <td>$9.1T in consumption gains requires consumers with income. Doesn't model what happens if that income vanishes.</td>
+                    </tr>
+                    <tr>
+                        <td>Acemoglu<br>~1% GDP over 10 years</td>
+                        <td>Only 4.6% of GDP exposed to profitable AI automation. Modest productivity gains on affected tasks.</td>
+                        <td>Critics say too conservative. Acemoglu says it's what the data shows for near-term profitable automation.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="height: 24px;"></div>
+
+            <p>Three of the four assume displaced workers find new jobs. McKinsey doesn't even model what happens if they don't. Goldman's model is built on historical patterns from electricity and personal computers&mdash;technologies that automated physical tasks and left cognitive work for humans. AI automates cognitive work. The thing humans moved to last time.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- SECTION 2: THE MECHANISMS DON'T ADD UP -->
+
+        <section>
+            <div class="label">Three problems with the growth math</div>
+
+            <h2>1. Productivity is not GDP</h2>
+
+            <p>When a company replaces 4,000 customer service workers with AI and handles the same volume of calls, output per worker goes up. That's a productivity gain. But total output (the number of calls handled, the value of the service) hasn't changed. GDP measures total output. It stayed flat.</p>
+
+            <p>What changed: costs went down and margins went up. The company is more profitable. Its stock price probably jumped. But the economy didn't grow. Income shifted from wages to profits.</p>
+
+            <div class="callout">
+                <p>Block cut roughly 4,000 employees in February 2026. Stock jumped 24%. Salesforce cut its support team from 9,000 to 5,000&mdash;Marc Benioff: "I need less heads." Amazon cut 14,000 corporate roles. In each case, Wall Street rewarded the cut. None of these represent GDP growth. They represent redistribution from labor to capital.</p>
+                <p class="attr">Block, Feb 2026; Salesforce, Sep 2025 (Logan Bartlett Show); Amazon, Oct 2025</p>
+            </div>
+
+            <p>The GDP forecasts are mostly measuring expected productivity gains and calling them GDP growth. McKinsey's $13&ndash;22 trillion is a supply-side, technical-potential estimate. It measures what AI <i>could</i> do to output per worker. It doesn't measure whether total output value increases. If prices fall, it might not.</p>
+
+            <h2>2. The digital economy is 10% of GDP. AI is making it cheaper.</h2>
+
+            <p>The US digital economy is about 10% of GDP ($2.6 trillion as of 2022, the last year BEA measured it). Software and IT investment was historically a rounding error in GDP growth, contributing about 0.3 percentage points per year. Then in the first half of 2025, it accounted for <i>all</i> of GDP growth. A 28% annualized surge, entirely from the AI investment boom. That's not organic growth. That's a capex cycle.</p>
+
+            <p>But what happens when the capex cycle ends and the AI starts producing? When the marginal cost of producing software approaches the marginal cost of compute, and compute costs keep falling, software prices collapse. Right now the AI boom is growing GDP through investment spending. The question is what happens to GDP when that investment starts <i>working</i>. When AI agents can build a SaaS product in hours and the value of software as a product approaches zero.</p>
+
+            <div class="versus">
+                <div class="versus-item">
+                    <div class="who">Digital economy</div>
+                    <div class="role">BEA, 2022</div>
+                    <div class="number">$2.6T</div>
+                    <div class="unit">~10% of US GDP</div>
+                </div>
+                <div class="versus-item">
+                    <div class="who">Software &amp; IT investment</div>
+                    <div class="role">H1 2025</div>
+                    <div class="number">100%</div>
+                    <div class="unit">of GDP growth (annualized 28% surge)</div>
+                </div>
+            </div>
+            <div class="caption">BEA Digital Economy Satellite Account, 2022 (last year measured before budget cuts discontinued it). BEA NIPA Tables 1.5.2, 1.5.6 for 2025 investment data.</div>
+
+            <div style="height: 16px;"></div>
+
+            <p>GDP is measured in dollars. More output at lower prices can mean <i>less</i> GDP, not more. RAND modeled this directly: "Nominal GDP is substantially lower if AI systems lead to substantive deflation, even though real GDP growth rate remains similar." The economy produces more. The number gets smaller.</p>
+
+            <p>Sam Altman gets this: "GDP is going to be a terrible metric because AI is so deflationary." He's right about the measurement problem. But deflation only helps if you still have income. If the mechanism that creates the deflation (replacing workers with AI) also destroys the paychecks, cheaper goods don't fix much.</p>
+
+            <h2>3. Consumption is 68% of GDP. Workers are consumers.</h2>
+
+            <p>GDP = C + I + G + NX. Consumption (C) is over two-thirds of the number. Consumption comes from income. Most income comes from wages. If AI displaces workers at scale, wages fall, consumption falls, GDP falls.</p>
+
+            <p>Citrini Research modeled this as a spiral: each company's decision to cut staff and deploy AI is individually rational. Collectively, the cuts shrink the customer base for every other company's products. Declining consumer spending creates margin pressure, which forces more AI investment, which causes more layoffs. Citrini calls it "no natural brake."</p>
+
+            <div style="height: 16px;"></div>
+
+            <div class="versus">
+                <div class="versus-item">
+                    <div class="who">US labor share of GDP</div>
+                    <div class="role">Current (2024)</div>
+                    <div class="number">56%</div>
+                    <div class="unit">already down from 64% in 1974</div>
+                </div>
+                <div class="versus-item">
+                    <div class="who">Citrini's 2028 scenario</div>
+                    <div class="role">Projected if spiral continues</div>
+                    <div class="number">46%</div>
+                    <div class="unit">sharpest decline on record</div>
+                </div>
+            </div>
+            <div class="caption">Citrini Research, "The 2028 Global Intelligence Crisis," February 2026. Framed as a thought exercise, not a forecast. Still: 10 percentage points of labor share is roughly $2.8 trillion in wages.</div>
+
+            <div style="height: 16px;"></div>
+
+            <p>Citadel Securities published a full rebuttal. Their argument: productivity shocks are historically growth-enhancing. Falling costs expand the consumption frontier. Keynes underestimated the elasticity of human wants, and Citrini is making the same mistake. That's the standard economic counter, and historically it's been roughly true. But it assumes the income exists to consume with. Workers spend 70&ndash;90 cents of every dollar. Capital owners don't. The velocity changes when the composition of income changes.</p>
+
+            <p>Acemoglu's framework gives this some structure: automation has a <b>displacement effect</b> (AI takes tasks, labor demand drops) and a <b>reinstatement effect</b> (new tasks emerge for humans). Historically these balanced. But Acemoglu's own data shows reinstatement has been weakening since the 1980s. And that was before AI&mdash;before the tool doing the displacing could also do the new tasks.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- SECTION 3: THE CURRENT SCOREBOARD -->
+
+        <section>
+            <div class="label">Where we actually are</div>
+
+            <div class="single-stat">
+                <div class="number">~0%</div>
+                <div class="desc">AI's measured contribution to US GDP through 2025.</div>
+            </div>
+            <div class="caption">Goldman Sachs Economics Research, February 2026. Part of the reason: AI hardware is imported. "Adds to Taiwanese GDP, Korean GDP, but not really US GDP."</div>
+
+            <div style="height: 24px;"></div>
+
+            <p>An NBER survey of nearly 6,000 executives across the US, UK, Germany, and Australia found <b>89% reported no impact of AI on their labor productivity</b> over the previous three years. Robert Solow noticed the same thing about computers in 1987: "You can see the computer age everywhere but in the productivity statistics."</p>
+
+            <p>But the layoffs are real. Challenger, Gray &amp; Christmas counted 55,000 AI-attributed job cuts in 2025. That's up from near zero in 2023. An HBR analysis from January 2026 found <b>60% of AI layoffs are anticipatory</b>&mdash;companies cutting staff because they expect AI to replace those roles, not because it already has. Only 2% came from actual AI implementation making workers redundant. And Forrester found 55% of employers who made AI-related layoffs already regret the decision.</p>
+
+            <p>Oxford Economics calls some of this "AI-washing"&mdash;companies using AI as cover for ordinary cost-cutting because the market rewards the narrative. The 55,000 is 4.5% of 1.17 million total layoffs in 2025.</p>
+
+            <p>So the scoreboard right now is: <b>GDP impact near zero, but layoffs real and accelerating</b>. Dario Amodei predicts half of entry-level white-collar jobs gone within one to five years. VCs surveyed by TechCrunch expect AI to "aggressively impact" the employment rate in 2026. The productivity gains haven't arrived. The displacement has started anyway.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- SECTION 4: WHY AI ISN'T ELECTRICITY -->
+
+        <section>
+            <div class="label">Why this isn't like electricity</div>
+
+            <p>The optimist response to all of this is: give it time. Electricity was invented in the 1880s and didn't show up in productivity statistics until the 1920s. Factories had to be physically redesigned around electric motors. Forty years between invention and impact.</p>
+
+            <p>I don't think this analogy holds anymore.</p>
+
+            <p>Electricity automated physical power. Humans moved to cognitive work: management, design, analysis, communication. That's where the new jobs came from. AI automates cognitive work. It automates the thing humans moved to last time. And unlike electricity, it can learn new tasks. When a new role emerges, AI can do that too.</p>
+
+            <p>The ATM example gets cited a lot: ATMs didn't kill bank tellers. Tellers shifted to advisory and relationship work. True&mdash;but ATMs could only dispense cash. They couldn't learn to give financial advice. AI can. Research from 2025 shows AI alone outperforming AI-plus-human teams on legal research and medical diagnosis. The "centaur" model (humans working alongside AI) is already losing to the pure AI version in measurable domains.</p>
+
+            <p>Goldman's model assumes displaced workers find "slightly less productive" new jobs, following patterns from electricity and PCs. But those patterns held because the new jobs required capabilities the automation didn't have. If AI has those capabilities, or develops them in months rather than decades, there's nowhere to move to.</p>
+
+            <p>Adoption is different too. Electricity required rewiring factories. You had to physically rebuild infrastructure. AI requires a subscription. The bottleneck isn't hardware installation. It's a decision to cancel headcount. Companies are making that decision before the AI even works&mdash;60% of AI layoffs are anticipatory.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- SECTION 5: THREE SCENARIOS -->
+
+        <section>
+            <div class="label">Three scenarios</div>
+
+            <p>All of these assume AI works. The capability is real. The question is what happens to the numbers and to the people.</p>
+
+            <div style="height: 24px;"></div>
+
+            <div class="scenario">
+                <h3>1. The Measurement Collapse</h3>
+                <p>AI makes everything radically cheaper. Real output explodes. But nominal GDP stagnates or shrinks because prices collapse faster than volume grows. The $15 trillion forecasts are wrong&mdash;not because AI failed, but because GDP can't capture what's happening. Quality of life might improve while GDP goes down. Altman is right: the metric breaks. The question shifts from "how much growth?" to "who has access to what?" This is the optimistic scenario, but it looks terrible on a dashboard.</p>
+            </div>
+
+            <div class="scenario">
+                <h3>2. The Demand Spiral</h3>
+                <p>AI displaces workers faster than any mechanism redistributes the gains. Consumption collapses. Each company's rational choice to automate becomes collectively catastrophic. Citrini's spiral: layoffs reduce spending, reduced spending pressures margins, margin pressure drives more automation. GDP actually contracts. RAND's model: "Nominal GDP is substantially lower if AI leads to substantive deflation." This isn't the 1880s (slow adoption, eventual catch-up). It's the 1930s (demand crisis requiring government intervention).</p>
+            </div>
+
+            <div class="scenario primary">
+                <h3>3. The Ownership Economy</h3>
+                <p>The forecasts are right on the headline number. GDP grows 5&ndash;10%. But the gains accrue entirely to capital&mdash;the companies deploying AI and the people who own shares in them. Labor share drops from 56% to the low 40s. Corporate profits surge. A small ownership class lives in something approaching post-scarcity. Everyone else lives on whatever redistribution exists. That's Ghost GDP&mdash;output that shows up in the national accounts but never reaches most people's bank accounts.</p>
+            </div>
+
+            <div style="height: 32px;"></div>
+
+            <p>These aren't mutually exclusive. The Measurement Collapse and the Ownership Economy could happen simultaneously&mdash;real GDP stagnant while corporate profits and quality of life for asset owners both surge. The Demand Spiral could trigger the policy interventions (UBI, fiscal stimulus, job guarantees) that prevent the worst version of the Ownership Economy. Or not.</p>
+
+            <p>What all three share: <b>the $15 trillion number doesn't tell you anything useful about what happens to people</b>. The Measurement Collapse means life might actually improve while the headline number stagnates. The Demand Spiral means the number was always fiction. The Ownership Economy means the number is real but describes someone else's life. Different flavors of the same problem.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- SECTION 6: THE BACKDROP -->
+
+        <section>
+            <div class="label">The backdrop</div>
+
+            <p>None of this is landing in a vacuum. For fifty years, productivity gains have not become wage gains.</p>
+
+            <div style="height: 16px;"></div>
+
+            <!-- SVG: Productivity vs Compensation -->
+            <div class="chart-container">
+                <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background -->
+                    <rect width="700" height="380" fill="#e8e5df" rx="0"/>
+
+                    <!-- Title -->
+                    <text x="48" y="32" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">Productivity vs. Typical Worker's Compensation</text>
+                    <text x="48" y="48" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">Cumulative percent change since 1948 | Source: EPI analysis of BLS data</text>
+
+                    <!-- Y axis labels -->
+                    <text x="44" y="85" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555" text-anchor="end">250%</text>
+                    <text x="44" y="135" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555" text-anchor="end">200%</text>
+                    <text x="44" y="185" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555" text-anchor="end">150%</text>
+                    <text x="44" y="235" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555" text-anchor="end">100%</text>
+                    <text x="44" y="285" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555" text-anchor="end">50%</text>
+                    <text x="44" y="335" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555" text-anchor="end">0%</text>
+
+                    <!-- Grid lines -->
+                    <line x1="52" y1="82" x2="660" y2="82" stroke="#d4d4d0" stroke-width="0.5"/>
+                    <line x1="52" y1="132" x2="660" y2="132" stroke="#d4d4d0" stroke-width="0.5"/>
+                    <line x1="52" y1="182" x2="660" y2="182" stroke="#d4d4d0" stroke-width="0.5"/>
+                    <line x1="52" y1="232" x2="660" y2="232" stroke="#d4d4d0" stroke-width="0.5"/>
+                    <line x1="52" y1="282" x2="660" y2="282" stroke="#d4d4d0" stroke-width="0.5"/>
+                    <line x1="52" y1="332" x2="660" y2="332" stroke="#d4d4d0" stroke-width="0.5"/>
+
+                    <!-- X axis labels -->
+                    <text x="52" y="352" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">1948</text>
+                    <text x="174" y="352" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">1960</text>
+                    <text x="296" y="352" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">1973</text>
+                    <text x="418" y="352" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">1990</text>
+                    <text x="540" y="352" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">2005</text>
+                    <text x="640" y="352" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">2020</text>
+
+                    <!-- Vertical line at 1973 -->
+                    <line x1="296" y1="62" x2="296" y2="340" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>
+                    <text x="300" y="72" font-family="IBM Plex Mono, monospace" font-size="9" fill="#555">1973</text>
+
+                    <!-- Productivity line (rises steeply) -->
+                    <polyline points="52,332 174,287 296,235 418,192 540,142 660,82"
+                        fill="none" stroke="#1a1a1a" stroke-width="2.5"/>
+
+                    <!-- Compensation line (tracks then flattens) -->
+                    <polyline points="52,332 174,290 296,240 418,237 540,234 660,232"
+                        fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-dasharray="6,4"/>
+
+                    <!-- Gap shading (between lines, post-1973) -->
+                    <polygon points="296,235 418,192 540,142 660,82 660,232 540,234 418,237 296,240"
+                        fill="#1a1a1a" opacity="0.06"/>
+
+                    <!-- Labels -->
+                    <text x="662" y="78" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Productivity</text>
+                    <text x="662" y="92" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">+252%</text>
+
+                    <text x="662" y="228" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Compensation</text>
+                    <text x="662" y="242" font-family="IBM Plex Mono, monospace" font-size="10" fill="#555">+100%</text>
+
+                    <!-- Annotation arrow area -->
+                    <text x="440" y="170" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#555">The gap</text>
+                </svg>
+            </div>
+            <div class="caption">Cumulative, 1948&ndash;2020. The lines tracked until 1973. Since then: productivity up 72%, compensation up 9%. The gap is fifty years of declining unions, globalization, financialization. AI arrives into that gap.</div>
+
+            <div style="height: 24px;"></div>
+
+            <p>Daniel Citrini calls the AI-accelerated version of this "Ghost GDP." Output that shows up in national accounts but never circulates as income people actually spend.</p>
+
+            <p>The institutions that used to connect productivity to pay (unions, tight labor markets, progressive taxation) are weaker than at any point since the 1920s. AI doesn't create the disconnect. It arrives into a system that's been disconnected for fifty years and applies pressure in exactly the direction the gap has been widening.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- CLOSING -->
+
+        <section>
+            <p>I don't know which scenario we end up in. I think the Measurement Collapse is underrated&mdash;GDP probably does become a bad metric, and some version of Altman's argument is right. But I also think the Ownership Economy is the default, because it's just the last fifty years with the dial turned up. Nothing about AI changes who captures productivity gains. It just makes the gains bigger and the question harder to ignore.</p>
+
+            <p>The forecasts might land. $15 trillion, $26 trillion, whatever. Or GDP might shrink while life gets better for some people and worse for others, and the number captures none of it. I genuinely don't know. But every time someone says "AI will grow the economy," I want to ask them to show their work. Which line items? Through what mechanism? Who ends up holding the money?</p>
+
+            <p>I haven't found anyone with a good answer to that yet. I'm still looking.</p>
+        </section>
+
+        <div class="source-list">
+            <p><strong>Sources</strong></p>
+            <p>McKinsey Global Institute, "The Economic Potential of Generative AI," 2023.</p>
+            <p>PwC, "Sizing the Prize: Global Artificial Intelligence Study," 2017/updated.</p>
+            <p>Goldman Sachs, "The Potentially Large Effects of Artificial Intelligence on Economic Growth," Briggs &amp; Kodnani, 2023.</p>
+            <p>Goldman Sachs Economics Research, February 2026. Jan Hatzius on AI's contribution to GDP.</p>
+            <p>Acemoglu, D. "The Simple Macroeconomics of AI." NBER Working Paper 32487, 2024.</p>
+            <p>Acemoglu, D. &amp; Restrepo, P. "Automation and New Tasks: How Technology Displaces and Reinstates Labor." JEP, 2019.</p>
+            <p>Yotzov, I. et al. "Firm Data on AI." NBER Working Paper 34836. Survey of ~6,000 executives across US, UK, Germany, Australia.</p>
+            <p>Amodei, Dario. Remarks at Davos, January 2026 (5&ndash;15% GDP estimate). Interview, May 2025 (entry-level job displacement).</p>
+            <p>RAND Corporation. "Federal Revenue When AI Replaces Human Labor." Working Paper WRA4443-1.</p>
+            <p>BEA, "U.S. Digital Economy: New and Revised Estimates," December 2023. BEA NIPA Tables 1.5.2, 1.5.6 for 2025 investment data.</p>
+            <p>IAB Research, "Measuring the Digital Economy," April 2025.</p>
+            <p>Bivens, J. &amp; Mishel, L. "Understanding the Historic Divergence Between Productivity and a Typical Worker's Pay." EPI, 2015.</p>
+            <p>Citrini Research, "The 2028 Global Intelligence Crisis," February 2026.</p>
+            <p>Citadel Securities, "The 2026 Global Intelligence Crisis," Frank Flight, February 2026.</p>
+            <p>Altman, Sam. Conversation with Vinod Khosla, February 2026.</p>
+            <p>Challenger, Gray &amp; Christmas. AI-attributed layoffs data, 2025.</p>
+            <p>HBR, "Companies Are Laying Off Workers Because of AI's Potential&mdash;Not Its Performance," Davenport, January 2026.</p>
+            <p>Forrester, "Predictions 2026: The Future of Work."</p>
+            <p>Oxford Economics, AI-washing analysis, January 2026.</p>
+            <p>Solow, Robert. "We'd Better Watch Out." New York Times Book Review, July 12, 1987.</p>
+            <p>Block, Inc. workforce reduction, February 2026. Salesforce support cuts, Benioff on The Logan Bartlett Show, September 2025. Amazon corporate cuts, October 2025.</p>
+        </div>
+
+    </div>
+</body>
+</html>
