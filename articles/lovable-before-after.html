@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Made Lovable Possible</title>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --paper: #fdfcfa;
+            --ink: #1a1a1a; --ink-light: #6b7280; --ink-faint: #9ca3af;
+            --rule: #e5e5e5; --rule-dark: #d4d4d4;
+            --green: #15803d;
+            --l1: #2563eb; --l1-bg: rgba(37,99,235,0.04); --l1-border: rgba(37,99,235,0.15);
+            --l2: #15803d; --l2-bg: rgba(21,128,61,0.04); --l2-border: rgba(21,128,61,0.15);
+            --l3: #b91c1c; --l3-bg: rgba(185,28,28,0.04); --l3-border: rgba(185,28,28,0.15);
+            --l4: #ca8a04; --l4-bg: rgba(202,138,4,0.04); --l4-border: rgba(202,138,4,0.15);
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--paper); color: var(--ink);
+            line-height: 1.7; font-size: 17px;
+            padding: 60px 24px;
+        }
+        .outer { max-width: 1200px; margin: 0 auto; }
+        h1 { font-family: 'Newsreader', Georgia, serif; font-size: 32px; font-weight: 400; text-align: center; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: var(--ink-light); font-size: 15px; margin-bottom: 40px; }
+
+        /* Diagram containers */
+        .diagram-wrap { position: relative; margin: 40px 0; }
+        .diagram-instruction { font-size: 13px; color: var(--ink-faint); text-align: center; margin-bottom: 16px; }
+        .diagram-container { margin-bottom: 60px; }
+        .diagram-header { text-align: center; margin-bottom: 16px; }
+        .diagram-header h2 { font-family: 'Newsreader', Georgia, serif; font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+        .diagram-header .period-label { font-size: 13px; color: var(--ink-faint); }
+
+        .diagram-flow { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0; position: relative; }
+        .layer-col { padding: 20px 12px; position: relative; display: flex; flex-direction: column; min-height: 400px; }
+        .layer-col.l1 { background: var(--l1-bg); border: 1px solid var(--l1-border); border-radius: 8px 0 0 8px; border-right: none; }
+        .layer-col.l2 { background: var(--l2-bg); border: 1px solid var(--l2-border); border-left: none; border-right: none; }
+        .layer-col.l3 { background: var(--l3-bg); border: 1px solid var(--l3-border); border-left: none; border-right: none; }
+        .layer-col.l4 { background: var(--l4-bg); border: 1px solid var(--l4-border); border-radius: 0 8px 8px 0; border-left: none; }
+
+        .layer-col-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+        .layer-col-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .l1 .layer-col-label { color: var(--l1); }
+        .l1 .layer-col-label .dot { background: var(--l1); }
+        .l2 .layer-col-label { color: var(--l2); }
+        .l2 .layer-col-label .dot { background: var(--l2); }
+        .l3 .layer-col-label { color: var(--l3); }
+        .l3 .layer-col-label .dot { background: var(--l3); }
+        .l4 .layer-col-label { color: var(--l4); }
+        .l4 .layer-col-label .dot { background: var(--l4); }
+
+        .node-stack { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: space-around; }
+
+        .node-pill { font-size: 11px; font-weight: 500; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; user-select: none; position: relative; z-index: 2; line-height: 1.3; }
+        .node-pill:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .node-pill.active { box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+
+        /* Layer 1 pills */
+        .l1 .node-pill { background: #fff; border-color: var(--l1-border); color: var(--ink); }
+        .l1 .node-pill.active { background: var(--l1); color: #fff; border-color: var(--l1); }
+
+        /* Layer 2 pills (capabilities + quality issues) */
+        .l2 .node-pill { background: #fff; border-color: var(--l2-border); color: var(--ink); }
+        .l2 .node-pill.active { background: var(--l2); color: #fff; border-color: var(--l2); }
+        .l2 .node-pill.barrier { border-style: dashed; color: #b91c1c; }
+        .l2 .node-pill.barrier.active { background: #b91c1c; color: #fff; border-color: #b91c1c; }
+
+        /* Layer 3 pills (org barriers + enablers) */
+        .l3 .node-pill { background: #fff; border-color: var(--l3-border); color: #b91c1c; border-style: dashed; }
+        .l3 .node-pill.active { background: var(--l3); color: #fff; border-color: var(--l3); }
+        .l3 .node-pill.enabler { border-style: solid; color: var(--green); border-color: var(--l2-border); }
+        .l3 .node-pill.enabler.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+        /* Layer 4 pills */
+        .l4 .node-pill { background: #fff; border-color: var(--l4-border); color: var(--ink); }
+        .l4 .node-pill.active { background: var(--l4); color: #fff; border-color: var(--l4); }
+
+        /* Before/After specific styling */
+        .before-diagram .l2 .node-pill.capability {
+            background: #fecaca;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+        .before-diagram .l3 .node-pill { opacity: 0.4; }
+        .before-diagram .l4 .node-pill:not(.viable) { opacity: 0.4; }
+
+        .after-diagram .l2 .node-pill.capability.crossed {
+            background: #dcfce7;
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .after-diagram .l3 .node-pill.enabler.highlighted {
+            background: #dcfce7;
+        }
+        .after-diagram .l3 .node-pill.not-relevant {
+            opacity: 0.3;
+        }
+        .after-diagram .l4 .node-pill.lovable {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border: 2px solid #d97706;
+            color: #78350f;
+            font-weight: 600;
+        }
+
+        /* Comparison arrows */
+        .comparison-arrows { position: relative; height: 40px; display: flex; align-items: center; justify-content: center; margin: 20px 0; }
+        .arrow-group { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
+        .arrow-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-light); }
+        .arrow-item .arrow { color: var(--green); font-weight: 600; }
+
+        /* Detail Panel */
+        .detail-panel { background: #fff; border: 1px solid var(--rule-dark); border-radius: 8px; padding: 24px; margin-top: 24px; display: none; }
+        .detail-panel.visible { display: block; }
+        .detail-panel-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px; }
+        .detail-panel-title { font-size: 18px; font-weight: 600; }
+        .detail-panel-close { font-size: 24px; cursor: pointer; color: var(--ink-faint); line-height: 1; }
+        .detail-panel-close:hover { color: var(--ink); }
+        .detail-panel-metric { font-size: 14px; color: var(--ink-light); margin-bottom: 12px; }
+        .detail-panel-trend { font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+<div class="outer">
+    <!-- Before/After Tabs -->
+    <div style="display: flex; gap: 0; border-bottom: 2px solid var(--rule-dark); margin: 32px 0 24px; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <button class="timeline-tab active" onclick="showTimeline('before')" style="flex: 1; padding: 12px 24px; background: none; border: none; border-bottom: 3px solid #dc2626; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--ink); font-family: inherit; margin-bottom: -2px;">
+            Before (Early 2023)
+        </button>
+        <button class="timeline-tab" onclick="showTimeline('after')" style="flex: 1; padding: 12px 24px; background: none; border: none; border-bottom: 3px solid transparent; font-size: 14px; font-weight: 500; cursor: pointer; color: var(--ink-light); font-family: inherit; margin-bottom: -2px;">
+            After (Mid-2024)
+        </button>
+    </div>
+
+    <!-- BEFORE DIAGRAM -->
+    <div class="diagram-container before-diagram" id="timeline-before">
+        <div class="diagram-header">
+            <h2>Before Lovable (Early 2023)</h2>
+            <div class="period-label">Capabilities below viability threshold</div>
+        </div>
+        
+        <div class="diagram-flow">
+            <div class="layer-col l1">
+                <div class="layer-col-label"><span class="dot"></span> Layer 0: Technical</div>
+                <div class="node-stack">
+                    <div class="node-pill">Hardware<br><span style="font-size: 9px;">$60/M tokens</span></div>
+                    <div class="node-pill small-text">Algorithmic Efficiency</div>
+                    <div class="node-pill">Architecture<br><span style="font-size: 9px;">4K context</span></div>
+                </div>
+            </div>
+            
+            <div class="layer-col l2">
+                <div class="layer-col-label"><span class="dot"></span> Layer 1: Capabilities</div>
+                <div class="node-stack">
+                    <div class="node-pill capability">Reasoning<br><span style="font-size: 9px;">Single function</span></div>
+                    <div class="node-pill capability">Working Memory<br><span style="font-size: 9px;">4K tokens</span></div>
+                    <div class="node-pill capability">Time on Task<br><span style="font-size: 9px;">Few minutes</span></div>
+                    <div class="node-pill capability">Cost<br><span style="font-size: 9px;">$60/M</span></div>
+                    <div class="node-pill barrier">Hallucination</div>
+                    <div class="node-pill barrier">Calibration</div>
+                    <div class="node-pill barrier">Taste</div>
+                    <div class="node-pill barrier">Effort</div>
+                </div>
+            </div>
+
+            <div class="layer-col l3">
+                <div class="layer-col-label"><span class="dot"></span> Layer 2: Barriers & Enablers</div>
+                <div class="node-stack">
+                    <div class="node-pill small-text">Context Access</div>
+                    <div class="node-pill small-text">Security</div>
+                    <div class="node-pill small-text">Change Mgmt</div>
+                    <div class="node-pill small-text">RAG</div>
+                    <div class="node-pill small-text">Tool Use</div>
+                    <div class="node-pill small-text">Multi-Agent</div>
+                    <div class="node-pill small-text">Human-in-the-Loop</div>
+                    <div class="node-pill small-text">Integrations</div>
+                </div>
+            </div>
+
+            <div class="layer-col l4">
+                <div class="layer-col-label"><span class="dot"></span> Layer 3: Deployment</div>
+                <div class="node-stack">
+                    <div class="node-pill viable">Single-Task<br>Automation</div>
+                    <div class="node-pill viable">Autocomplete<br>(Copilot)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail panel for Before diagram -->
+        <div class="detail-panel" id="detail-panel-before">
+            <div class="detail-panel-header">
+                <div class="detail-panel-title" id="dp-title-before"></div>
+                <div class="detail-panel-close" id="dp-close-before">&times;</div>
+            </div>
+            <div class="detail-panel-metric" id="dp-metric-before"></div>
+            <div class="detail-panel-trend" id="dp-trend-before"></div>
+        </div>
+    </div>
+
+    
+    <!-- AFTER DIAGRAM -->
+    <div class="diagram-container after-diagram" id="timeline-after" style="display: none;">
+        <div class="diagram-header">
+            <h2>What Enabled Lovable (Mid-2024)</h2>
+            <div class="period-label">All four capabilities crossed viability thresholds</div>
+        </div>
+        
+        <div class="diagram-flow">
+            <div class="layer-col l1">
+                <div class="layer-col-label"><span class="dot"></span> Layer 0: Technical</div>
+                <div class="node-stack">
+                    <div class="node-pill">Hardware<br><span style="font-size: 9px;">$0.40/M tokens</span></div>
+                    <div class="node-pill small-text">Algorithmic Efficiency</div>
+                    <div class="node-pill">Architecture<br><span style="font-size: 9px;">10M context</span></div>
+                </div>
+            </div>
+            
+            <div class="layer-col l2">
+                <div class="layer-col-label"><span class="dot"></span> Layer 1: Capabilities</div>
+                <div class="node-stack">
+                    <div class="node-pill capability crossed">Reasoning<br><span style="font-size: 9px;">50-80 decisions</span></div>
+                    <div class="node-pill capability crossed">Working Memory<br><span style="font-size: 9px;">10M tokens</span></div>
+                    <div class="node-pill capability crossed">Time on Task<br><span style="font-size: 9px;">30+ minutes</span></div>
+                    <div class="node-pill capability crossed">Cost<br><span style="font-size: 9px;">$0.40/M (150x)</span></div>
+                    <div class="node-pill barrier">Hallucination</div>
+                    <div class="node-pill barrier">Calibration</div>
+                    <div class="node-pill barrier">Taste</div>
+                    <div class="node-pill barrier">Effort</div>
+                </div>
+            </div>
+
+            <div class="layer-col l3">
+                <div class="layer-col-label"><span class="dot"></span> Layer 2: Barriers & Enablers</div>
+                <div class="node-stack">
+                    <div class="node-pill not-relevant small-text">Context Access</div>
+                    <div class="node-pill not-relevant small-text">Security</div>
+                    <div class="node-pill not-relevant small-text">Change Mgmt</div>
+                    <div class="node-pill enabler not-relevant small-text">RAG</div>
+                    <div class="node-pill enabler not-relevant small-text">Tool Use</div>
+                    <div class="node-pill enabler not-relevant small-text">Multi-Agent</div>
+                    <div class="node-pill enabler highlighted small-text">Human-in-the-Loop</div>
+                    <div class="node-pill enabler not-relevant small-text">Integrations</div>
+                </div>
+            </div>
+
+            <div class="layer-col l4">
+                <div class="layer-col-label"><span class="dot"></span> Layer 3: Deployment</div>
+                <div class="node-stack">
+                    <div class="node-pill">Single-Task<br>Automation</div>
+                    <div class="node-pill">Multi-Step<br>Workflows</div>
+                    <div class="node-pill lovable">Lovable<br>(Vibe Coding)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail panel for After diagram -->
+        <div class="detail-panel" id="detail-panel-after">
+            <div class="detail-panel-header">
+                <div class="detail-panel-title" id="dp-title-after"></div>
+                <div class="detail-panel-close" id="dp-close-after">&times;</div>
+            </div>
+            <div class="detail-panel-metric" id="dp-metric-after"></div>
+            <div class="detail-panel-trend" id="dp-trend-after"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const explanationsBefore = {
+    // Layer 1 - Technical (2023 state)
+    'hardware': {
+        title: 'Hardware',
+        metric: '$60/M tokens',
+        trend: 'Running extended sessions cost dollars per session. High cost limited how much you could iterate or experiment. Most use cases had to be economically justified before deployment.'
+    },
+    'algorithms': {
+        title: 'Algorithmic Efficiency',
+        metric: 'Training and inference was expensive',
+        trend: 'Model training and inference was computationally intensive. Costs limited experimentation and made real-time iterative workflows difficult for consumer products.'
+    },
+    'architecture': {
+        title: 'Architecture',
+        metric: '4K context window',
+        trend: 'Small context windows meant models forgot earlier parts of the conversation. Couldn\'t hold large amounts of information simultaneously. Basic reasoning capabilities - could handle simple tasks but struggled with complex coordination.'
+    },
+
+    // Layer 2 - Capabilities (2023 state - below threshold)
+    'reasoning': {
+        title: 'Reasoning',
+        metric: 'Single function level',
+        trend: 'Could write individual functions or small components. Attempts at full interfaces produced broken fragments with inconsistent styles and missing connections between parts. Couldn\'t handle complex multi-part tasks.'
+    },
+    'working-memory': {
+        title: 'Working Memory',
+        metric: '4K tokens',
+        trend: 'Could only see a few files at once. Forgot earlier parts of the conversation. This caused inconsistency - would forget earlier design decisions partway through generating an interface.'
+    },
+    'time-on-task': {
+        title: 'Time on Task',
+        metric: 'Few minutes',
+        trend: 'Could handle quick, simple tasks. Lost focus on anything longer. Completing a full component in one session wasn\'t possible - would need to break it into multiple separate interactions.'
+    },
+    'cost': {
+        title: 'Cost',
+        metric: '$60/M tokens',
+        trend: 'Expensive to run. Extended sessions or multiple regeneration rounds added up quickly. Made iterative, exploratory workflows impractical for consumer products.'
+    },
+    'hallucination': {
+        title: 'Hallucination',
+        metric: 'Makes up facts, invents APIs',
+        trend: 'Models invented CSS properties, created non-existent JavaScript APIs, and fabricated component libraries. Every output needed human review to catch errors and made-up information.'
+    },
+    'calibration': {
+        title: 'Calibration',
+        metric: 'Can\'t assess difficulty',
+        trend: 'Treated simple and complex tasks with equal confidence. Couldn\'t tell when it was out of its depth or when an answer was uncertain. Required humans to guide the process.'
+    },
+    'taste': {
+        title: 'Taste',
+        metric: 'Generic outputs',
+        trend: 'Generated designs were safe, bland, and unmemorable. Couldn\'t judge aesthetic quality. Produced functional but unremarkable interfaces.'
+    },
+    'effort': {
+        title: 'Effort',
+        metric: 'Takes shortcuts',
+        trend: 'Skipped accessibility, responsive design, edge cases, and polish. Did minimum work to satisfy the prompt. Required human effort to bring outputs to production quality.'
+    },
+
+    // Layer 3 - Barriers & Enablers (2023 state)
+    'context-access': {
+        title: 'Context Access',
+        metric: 'Can\'t access design files or brand guidelines',
+        trend: 'Models couldn\'t access existing design systems, brand guidelines, or organizational context. Only worked for greenfield projects where all context could be provided in the prompt.'
+    },
+    'security': {
+        title: 'Security',
+        metric: 'Generated code has security risks',
+        trend: 'Code might contain XSS vulnerabilities, injection risks, or insecure patterns. Required human security review before deployment.'
+    },
+    'change-mgmt': {
+        title: 'Change Management',
+        metric: 'Requires approval processes',
+        trend: 'Organizations needed approval workflows and review cycles. Blocked autonomous shipping - humans handled the approval process.'
+    },
+    'rag': {
+        title: 'RAG',
+        metric: 'Not viable in 2023',
+        trend: 'Small context windows (4K tokens) made retrieval-augmented generation impractical. Couldn\'t fit enough retrieved documents plus the working context.'
+    },
+    'tool-use': {
+        title: 'Tool Use',
+        metric: 'Unreliable in 2023',
+        trend: 'Models were inconsistent at tool calling. Function calling accuracy was too low (~47%) for production use.'
+    },
+    'multi-agent': {
+        title: 'Multi-Agent',
+        metric: 'Too expensive in 2023',
+        trend: 'At $60/M tokens, running multiple agents in parallel was economically prohibitive. A multi-agent workflow would cost 3-5x more than single-agent.'
+    },
+    'hitl': {
+        title: 'Human-in-the-Loop',
+        metric: 'Required but outputs were low quality',
+        trend: 'Human review was necessary, but the AI outputs were so limited (single functions, small context) that humans spent more time fixing than the AI saved.'
+    },
+    'integrations': {
+        title: 'Integrations',
+        metric: 'Limited value in 2023',
+        trend: 'Not worth integrating deeply when models could only handle simple, narrow tasks. Basic API access was sufficient.'
+    },
+
+    // Layer 4 - Deployment (2023 state)
+    'single-task': {
+        title: 'Single-Task Automation',
+        metric: 'Viable in 2023',
+        trend: 'Simple one-step operations like classification, extraction, scoring worked despite limitations. Narrow enough that hallucination risk was manageable and small context was sufficient.'
+    },
+    'autocomplete': {
+        title: 'Autocomplete (GitHub Copilot)',
+        metric: 'Coding assistant',
+        trend: 'Complete the next line or function based on context. Helped developers write code faster by suggesting completions. Required human to write the structure, provide context, and review every suggestion. Accelerated coding but didn\'t replace the need for developer judgment and architecture.'
+    }
+};
+
+const explanationsAfter = {
+    // Layer 1 - Technical
+    'hardware': {
+        title: 'Hardware',
+        metric: '$0.40/M tokens (150x cheaper)',
+        trend: 'Better GPUs and chips made inference 150x cheaper from 2023 to 2024. This enabled holding entire codebases in context for extended sessions without prohibitive costs. Indirectly enabled Lovable by making vibe coding economically viable.'
+    },
+    'algorithms': {
+        title: 'Algorithmic Efficiency',
+        metric: '280x cheaper to train to GPT-4 level',
+        trend: 'Improvements in model training and inference algorithms contributed to the 150x cost reduction. Made it possible to run many iterations of generation-testing-refinement cycles affordably.'
+    },
+    'architecture': {
+        title: 'Architecture',
+        metric: '10M token context (2,500x growth)',
+        trend: 'Context windows grew from 4K to 10M tokens (2,500x). Chain-of-thought reasoning and improved tool use capabilities emerged. These architectural improvements directly enabled the 4 capability thresholds that made Lovable possible.'
+    },
+
+    // Layer 2 - Capabilities (2024 state - thresholds crossed)
+    'reasoning': {
+        title: 'Reasoning',
+        metric: 'Single function → 50-80 coordinated decisions',
+        trend: 'Jumped from handling a single function to coordinating 50-80 decisions across an entire UI component. This threshold crossing was CRITICAL for Lovable - vibe coding requires understanding user intent, translating it to design choices, generating coordinated HTML/CSS/JS, and making consistent style decisions throughout. Without this, you get broken fragments, not complete interfaces.'
+    },
+    'working-memory': {
+        title: 'Working Memory',
+        metric: '4K → 10M tokens (2,500x growth)',
+        trend: 'Context windows expanded from 4K to 10M tokens. This threshold crossing was CRITICAL for Lovable - vibe coding requires holding the entire design system, component library, style guide, previous iterations, and user feedback simultaneously. Without this, generated code would be inconsistent or forget earlier decisions mid-generation.'
+    },
+    'time-on-task': {
+        title: 'Time on Task',
+        metric: 'Few minutes → 30+ minutes sustained work',
+        trend: 'Sustained focus increased from a few minutes to 30+ minutes of continuous work. This threshold crossing was CRITICAL for Lovable - vibe coding requires generating initial UI, testing it, refining based on issues, iterating on user feedback, all without losing context or focus. Without this, couldn\'t complete full components in one session.'
+    },
+    'cost': {
+        title: 'Cost',
+        metric: '$60/M → $0.40/M tokens (150x cheaper)',
+        trend: 'Inference costs dropped from $60/M to $0.40/M tokens (150x cheaper). This threshold crossing was CRITICAL for Lovable - vibe coding requires 10-20 regenerations per component as users refine their vision. At 2023 prices, each component would cost dollars. At 2024 prices, it costs cents. Made the product economically viable.'
+    },
+    'hallucination': {
+        title: 'Hallucination',
+        metric: 'Still makes up facts, invents APIs',
+        trend: 'Models still make up CSS properties, invent JavaScript APIs, or create non-existent component libraries. This BLOCKS full autonomy but doesn\'t prevent Lovable - users can see the generated UI immediately and catch obvious errors. The human-in-the-loop review catches hallucinations before deployment.'
+    },
+    'calibration': {
+        title: 'Calibration',
+        metric: 'Can\'t assess task difficulty or uncertainty',
+        trend: 'Models can\'t accurately assess task difficulty or uncertainty. Treats "make it blue" and "design a complex dashboard" with equal confidence. This BLOCKS full autonomy but doesn\'t prevent Lovable - users provide the calibration by iteratively refining prompts and catching when the AI misunderstands.'
+    },
+    'taste': {
+        title: 'Taste',
+        metric: 'Generic, safe, unmemorable outputs',
+        trend: 'Generated designs are generic, safe, and unmemorable. Can\'t judge "this layout feels cluttered" or "these colors clash." This BLOCKS creating distinctive products but doesn\'t prevent Lovable from working - users can iterate and refine toward their taste, using the AI as a fast implementation tool rather than a design oracle.'
+    },
+    'effort': {
+        title: 'Effort',
+        metric: 'Takes shortcuts, skips polish',
+        trend: 'Takes shortcuts on accessibility, responsive design, edge cases, and polish. Does minimum viable work to satisfy the prompt. This BLOCKS production-ready output but doesn\'t prevent Lovable - users expect to iterate and polish. The AI accelerates initial creation; humans add the finish.'
+    },
+
+    // Layer 3 - Barriers & Enablers
+    'context-access': {
+        title: 'Context Access',
+        metric: 'Can\'t access design files, brand guidelines, internal systems',
+        trend: 'Models can\'t access design files, brand guidelines, internal wikis, or organizational context. This BLOCKS enterprise deployment but doesn\'t prevent Lovable - it works for greenfield projects where all context can be provided in the prompt or doesn\'t exist yet.'
+    },
+    'security': {
+        title: 'Security',
+        metric: 'Code may have XSS, injection risks',
+        trend: 'Generated code might have XSS vulnerabilities, SQL injection risks, or insecure auth patterns. This BLOCKS autonomous deployment but doesn\'t prevent Lovable - human review catches security issues before pushing to production.'
+    },
+    'change-mgmt': {
+        title: 'Change Management',
+        metric: 'Approval processes, review cycles required',
+        trend: 'Organizations have approval processes, review cycles, and stakeholder sign-offs. This BLOCKS autonomous shipping but doesn\'t prevent Lovable - it accelerates the creation phase, humans handle the approval process.'
+    },
+    'rag': {
+        title: 'RAG (Retrieval-Augmented Generation)',
+        metric: 'Not relevant for Lovable',
+        trend: 'Not directly relevant to Lovable. RAG helps when you need to search large knowledge bases or documentation. Vibe coding doesn\'t require this - the entire context fits in the 10M token window. RAG became viable at the same time but didn\'t enable this specific use case.'
+    },
+    'tool-use': {
+        title: 'Tool Use',
+        metric: 'Not relevant for Lovable',
+        trend: 'Not directly relevant to Lovable. Tool use (calling APIs, running commands) is powerful for agent workflows. Vibe coding is primarily generative - produce HTML/CSS/JS from a prompt. The tool here is code generation itself, not external tool calling. Became viable at the same time but didn\'t enable this use case.'
+    },
+    'multi-agent': {
+        title: 'Multi-Agent',
+        metric: 'Not relevant for Lovable',
+        trend: 'Not directly relevant to Lovable. Multi-agent patterns (designer agent + developer agent + reviewer agent) could theoretically help, but Lovable works with a single generative model. The complexity of coordinating multiple agents wasn\'t necessary when one model could handle the full task.'
+    },
+    'hitl': {
+        title: 'Human-in-the-Loop',
+        metric: 'DIRECTLY ENABLED Lovable',
+        trend: 'This DIRECTLY ENABLED Lovable. Users see generated UI immediately, provide feedback ("make it darker", "add a sidebar"), and iterate in real-time. The human provides taste, catches hallucinations, guides refinement, and decides when it\'s done. This pattern makes vibe coding viable despite quality issues in Layer 2.'
+    },
+    'integrations': {
+        title: 'Integrations',
+        metric: 'Not relevant for Lovable',
+        trend: 'Not directly relevant to Lovable. Integrations with existing tools/systems matter for enterprise deployment, but Lovable works as a standalone generative UI tool. Users copy the generated code into their workflow. No deep integrations required for the core use case.'
+    },
+
+    // Layer 4 - Deployment (2024 state)
+    'single-task': {
+        title: 'Single-Task Automation',
+        metric: 'Worked in 2023',
+        trend: 'Simple one-step operations like classification, extraction, scoring. This worked even before the thresholds crossed - didn\'t require the extended reasoning, memory, or time that Lovable needed.'
+    },
+    'multi-step': {
+        title: 'Multi-Step Workflows',
+        metric: 'Enabled by autonomy threshold crossing',
+        trend: 'Support tickets, contract review, bug fixes. Became viable in 2024 when autonomy crossed the hours threshold. Lovable is a specific type of multi-step workflow.'
+    },
+    'lovable': {
+        title: 'Lovable (Vibe Coding)',
+        metric: 'Enabled by 4 simultaneous threshold crossings',
+        trend: 'Vibe coding became possible when Reasoning, Working Memory, Time on Task, and Cost ALL crossed viability thresholds in 2024. No single capability would have been enough - needed all four plus human-in-the-loop to work around quality issues.'
+    }
+};
+
+function showExplanation(key, element, panelId) {
+    const panel = document.getElementById(panelId);
+    const isBefore = panelId.includes('before');
+    const explanations = isBefore ? explanationsBefore : explanationsAfter;
+    const explanation = explanations[key];
+
+    // Remove active class from all pills
+    document.querySelectorAll('.node-pill').forEach(pill => pill.classList.remove('active'));
+
+    // Hide both panels
+    document.getElementById('detail-panel-before').classList.remove('visible');
+    document.getElementById('detail-panel-after').classList.remove('visible');
+
+    // Add active class to clicked pill
+    if (element) element.classList.add('active');
+
+    if (explanation) {
+        const suffix = isBefore ? '-before' : '-after';
+        document.getElementById('dp-title' + suffix).textContent = explanation.title;
+        document.getElementById('dp-metric' + suffix).textContent = explanation.metric;
+        document.getElementById('dp-trend' + suffix).textContent = explanation.trend;
+        panel.classList.add('visible');
+    }
+}
+
+function closePanel(panelId) {
+    document.getElementById(panelId).classList.remove('visible');
+    document.querySelectorAll('.node-pill').forEach(pill => pill.classList.remove('active'));
+}
+
+// Close button handlers
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dp-close-before').addEventListener('click', () => closePanel('detail-panel-before'));
+    document.getElementById('dp-close-after').addEventListener('click', () => closePanel('detail-panel-after'));
+});
+
+// Add click handlers to all node pills
+document.addEventListener('DOMContentLoaded', () => {
+    // Layer 1 - Before diagram
+    document.querySelector('.before-diagram .l1').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['hardware', 'algorithms', 'architecture'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 1 - After diagram
+    document.querySelector('.after-diagram .l1').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['hardware', 'algorithms', 'architecture'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 2 - Before diagram
+    document.querySelector('.before-diagram .l2').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['reasoning', 'working-memory', 'time-on-task', 'cost', 'hallucination', 'calibration', 'taste', 'effort'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 2 - After diagram
+    document.querySelector('.after-diagram .l2').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['reasoning', 'working-memory', 'time-on-task', 'cost', 'hallucination', 'calibration', 'taste', 'effort'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 3 - Before diagram
+    document.querySelector('.before-diagram .l3').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['context-access', 'security', 'change-mgmt', 'rag', 'tool-use', 'multi-agent', 'hitl', 'integrations'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 3 - After diagram
+    document.querySelector('.after-diagram .l3').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['context-access', 'security', 'change-mgmt', 'rag', 'tool-use', 'multi-agent', 'hitl', 'integrations'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 4 - Before diagram
+    document.querySelector('.before-diagram .l4').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['single-task', 'autocomplete'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 4 - After diagram
+    document.querySelector('.after-diagram .l4').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['single-task', 'multi-step', 'lovable'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+});
+
+function showTimeline(period) {
+    if (period === 'before') {
+        document.getElementById('timeline-before').style.display = 'block';
+        document.getElementById('timeline-after').style.display = 'none';
+    } else {
+        document.getElementById('timeline-before').style.display = 'none';
+        document.getElementById('timeline-after').style.display = 'block';
+    }
+
+    // Update tab styles
+    document.querySelectorAll('.timeline-tab').forEach(tab => {
+        tab.style.borderBottomColor = 'transparent';
+        tab.style.fontWeight = '500';
+        tab.style.color = 'var(--ink-light)';
+    });
+
+    event.target.style.borderBottomColor = period === 'before' ? '#dc2626' : '#15803d';
+    event.target.style.fontWeight = '600';
+    event.target.style.color = 'var(--ink)';
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Exponential AI: How Model Improvements Lead to Real-World Deployment Breakthroughs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --paper: #fdfcfa;
+            --ink: #1a1a1a; --ink-light: #6b7280; --ink-faint: #9ca3af;
+            --rule: #e5e5e5; --rule-dark: #d4d4d4;
+            --accent: #c2410c;
+            --green: #15803d;
+            --l1: #2563eb; --l1-bg: rgba(37,99,235,0.04); --l1-border: rgba(37,99,235,0.15);
+            --l2: #15803d; --l2-bg: rgba(21,128,61,0.04); --l2-border: rgba(21,128,61,0.15);
+            --l3: #b91c1c; --l3-bg: rgba(185,28,28,0.04); --l3-border: rgba(185,28,28,0.15);
+            --l4: #ca8a04; --l4-bg: rgba(202,138,4,0.04); --l4-border: rgba(202,138,4,0.15);
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--paper); color: var(--ink);
+            line-height: 1.7; font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .outer { max-width: 1200px; margin: 0 auto; padding: 60px 24px; }
+        .prose { max-width: 680px; margin: 0 auto; }
+
+        /* Header */
+        header { max-width: 680px; margin: 0 auto 48px; border-bottom: 1px solid var(--rule-dark); padding-bottom: 32px; }
+        .scenario-label { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+        h1 { font-family: 'Newsreader', Georgia, serif; font-size: 42px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px; }
+        .dateline { font-size: 12px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        /* Typography */
+        h2 { font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 500; margin-bottom: 20px; letter-spacing: -0.01em; margin-top: 56px; }
+        p { margin-bottom: 20px; line-height: 1.8; }
+        strong { font-weight: 600; }
+
+        /* Diagram section */
+        .diagram-wrap { position: relative; margin: 56px 0; max-width: 1200px; }
+        .diagram-instruction { font-size: 13px; color: var(--ink-faint); text-align: center; margin-bottom: 16px; }
+        .diagram-flow { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0; position: relative; }
+        .layer-col { padding: 20px 12px; position: relative; display: flex; flex-direction: column; min-height: 400px; }
+        .layer-col.l1 { background: var(--l1-bg); border: 1px solid var(--l1-border); border-radius: 8px 0 0 8px; border-right: none; }
+        .layer-col.l2 { background: var(--l2-bg); border: 1px solid var(--l2-border); border-left: none; border-right: none; }
+        .layer-col.l3 { background: var(--l3-bg); border: 1px solid var(--l3-border); border-left: none; border-right: none; }
+        .layer-col.l4 { background: var(--l4-bg); border: 1px solid var(--l4-border); border-radius: 0 8px 8px 0; border-left: none; }
+
+        .layer-col-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+        .layer-col-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .l1 .layer-col-label { color: var(--l1); }
+        .l1 .layer-col-label .dot { background: var(--l1); }
+        .l2 .layer-col-label { color: var(--l2); }
+        .l2 .layer-col-label .dot { background: var(--l2); }
+        .l3 .layer-col-label { color: var(--l3); }
+        .l3 .layer-col-label .dot { background: var(--l3); }
+        .l4 .layer-col-label { color: var(--l4); }
+        .l4 .layer-col-label .dot { background: var(--l4); }
+
+        .node-stack { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: space-around; }
+
+        .node-pill { font-size: 11px; font-weight: 500; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; user-select: none; position: relative; z-index: 2; line-height: 1.3; }
+        .node-pill:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .node-pill.active { box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+        .node-pill.dimmed { opacity: 0.2; }
+
+        /* Layer pills */
+        .l1 .node-pill { background: #fff; border-color: var(--l1-border); color: var(--ink); }
+        .l1 .node-pill.active { background: var(--l1); color: #fff; border-color: var(--l1); }
+
+        .l2 .node-pill { background: #fff; border-color: var(--l2-border); color: var(--ink); }
+        .l2 .node-pill.active { background: var(--l2); color: #fff; border-color: var(--l2); }
+        .l2 .node-pill.barrier { border-style: dashed; color: #b91c1c; }
+        .l2 .node-pill.barrier.active { background: #b91c1c; color: #fff; border-color: #b91c1c; }
+
+        .l3 .node-pill { background: #fff; border-color: var(--l3-border); color: #b91c1c; border-style: dashed; }
+        .l3 .node-pill.active { background: var(--l3); color: #fff; border-color: var(--l3); }
+        .l3 .node-pill.enabler { border-style: solid; color: var(--green); border-color: var(--l2-border); }
+        .l3 .node-pill.enabler.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+        .l4 .node-pill { background: #fff; border-color: var(--l4-border); color: var(--ink); }
+        .l4 .node-pill.active { background: var(--l4); color: #fff; border-color: var(--l4); }
+
+        .svg-connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .svg-connections path { fill: none; stroke: #000; stroke-width: 1; opacity: 0.08; }
+        .svg-connections path.highlighted { opacity: 0.3; stroke-width: 1.5; }
+        .svg-connections path.barrier { stroke: #b91c1c; stroke-dasharray: 3,3; }
+
+        /* Detail Panel */
+        .detail-panel { background: #fff; border: 1px solid var(--rule-dark); border-radius: 8px; padding: 24px; margin-top: 24px; display: none; }
+        .detail-panel.visible { display: block; }
+        .detail-panel-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px; }
+        .detail-panel-title { font-size: 18px; font-weight: 600; }
+        .detail-panel-close { font-size: 24px; cursor: pointer; color: var(--ink-faint); line-height: 1; }
+        .detail-panel-close:hover { color: var(--ink); }
+        .detail-panel-metric { font-size: 14px; color: var(--ink-light); margin-bottom: 12px; }
+        .detail-panel-trend { font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+        .detail-panel-connections { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--rule); }
+        .detail-panel-connections-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-light); margin-bottom: 8px; }
+        .detail-conn-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .detail-conn-pill { font-size: 11px; padding: 4px 8px; border-radius: 4px; background: var(--paper); border: 1px solid var(--rule); }
+        .detail-panel-source { font-size: 12px; color: var(--ink-faint); margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--rule); }
+
+        /* Case study links */
+        .case-studies { margin-top: 56px; }
+        .case-study-link { display: block; padding: 20px; background: #fff; border: 1px solid var(--rule-dark); border-radius: 8px; margin-bottom: 12px; text-decoration: none; color: var(--ink); transition: all 0.2s; }
+        .case-study-link:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-color: var(--accent); }
+        .case-study-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .case-study-desc { font-size: 14px; color: var(--ink-light); }
+    </style>
+</head>
+<body>
+<div class="outer">
+    <header>
+        <div class="scenario-label">Framework</div>
+        <h1>Understanding Exponential AI</h1>
+        <div class="dateline">How model improvements lead to real-world deployment breakthroughs</div>
+    </header>
+
+    <div class="prose">
+        <p>AI progress feels chaotic. One month, models can barely write a paragraph. The next, they're coding full applications. Why do capabilities seem to arrive in sudden bursts rather than smooth improvements?</p>
+
+        <p>The answer lies in understanding how exponential technical improvements flow through distinct layers before reaching real-world deployments.</p>
+    </div>
+
+    <!-- Four-Layer Framework Visual -->
+    <div style="max-width: 1000px; margin: 56px auto; padding: 40px; background: #fff; border: 1px solid var(--rule-dark); border-radius: 8px;">
+        <h2 style="font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 500; margin-bottom: 32px; text-align: center;">The Four-Layer Framework</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 0; align-items: center;">
+            <!-- Layer 0 -->
+            <div style="text-align: center; padding: 24px 16px; background: rgba(37,99,235,0.04); border: 2px solid rgba(37,99,235,0.2); border-radius: 8px;">
+                <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--l1); margin-bottom: 8px;">Layer 0</div>
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Technical</div>
+                <div style="font-size: 13px; color: var(--ink-light); line-height: 1.5;">Hardware, algorithms, architecture</div>
+                <div style="font-size: 12px; color: var(--l1); font-weight: 600; margin-top: 12px;">Exponential</div>
+            </div>
+
+            <!-- Arrow -->
+            <div style="font-size: 24px; color: var(--ink-light); padding: 0 8px;">→</div>
+
+            <!-- Layer 1 -->
+            <div style="text-align: center; padding: 24px 16px; background: rgba(21,128,61,0.04); border: 2px solid rgba(21,128,61,0.2); border-radius: 8px;">
+                <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--l2); margin-bottom: 8px;">Layer 1</div>
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Capabilities</div>
+                <div style="font-size: 13px; color: var(--ink-light); line-height: 1.5;">Reasoning, memory, time on task, cost</div>
+                <div style="font-size: 12px; color: var(--l2); font-weight: 600; margin-top: 12px;">Thresholds</div>
+            </div>
+
+            <!-- Arrow -->
+            <div style="font-size: 24px; color: var(--ink-light); padding: 0 8px;">→</div>
+
+            <!-- Layer 2 -->
+            <div style="text-align: center; padding: 24px 16px; background: rgba(185,28,28,0.04); border: 2px solid rgba(185,28,28,0.2); border-radius: 8px;">
+                <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #b91c1c; margin-bottom: 8px;">Layer 2</div>
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Barriers & Enablers</div>
+                <div style="font-size: 13px; color: var(--ink-light); line-height: 1.5;">What blocks or enables deployment</div>
+                <div style="font-size: 12px; color: #b91c1c; font-weight: 600; margin-top: 12px;">The Gap</div>
+            </div>
+
+            <!-- Arrow -->
+            <div style="font-size: 24px; color: var(--ink-light); padding: 0 8px;">→</div>
+
+            <!-- Layer 3 -->
+            <div style="text-align: center; padding: 24px 16px; background: rgba(202,138,4,0.04); border: 2px solid rgba(202,138,4,0.2); border-radius: 8px;">
+                <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--l4); margin-bottom: 8px;">Layer 3</div>
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Deployment</div>
+                <div style="font-size: 13px; color: var(--ink-light); line-height: 1.5;">What actually ships</div>
+                <div style="font-size: 12px; color: var(--l4); font-weight: 600; margin-top: 12px;">Real Use</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-light); line-height: 1.8;">
+            <div style="margin-bottom: 12px;"><strong style="color: var(--ink);">Layer 0</strong> improvements compound exponentially—hardware gets 150x cheaper, algorithms get 280x more efficient, context windows grow 2,500x.</div>
+            <div style="margin-bottom: 12px;"><strong style="color: var(--ink);">Layer 1</strong> capabilities cross discrete viability thresholds that suddenly make entire categories of work possible.</div>
+            <div style="margin-bottom: 12px;"><strong style="color: var(--ink);">Layer 2</strong> is where progress stalls—organizational barriers don't improve automatically, but product enablers can unlock paths through.</div>
+            <div><strong style="color: var(--ink);">Layer 3</strong> deployment happens when capabilities cross thresholds AND the right enablers exist AND barriers are addressable.</div>
+        </div>
+    </div>
+
+    <div class="prose">
+        <h2>Why Exponential Growth Leads to Sudden Deployments</h2>
+
+        <p>From 2021 to 2026: autocomplete tools (Copilot) → chat assistants (Cursor) → vibe coding (Lovable) → autonomous agents (Claude Code). Each deployment required specific capability thresholds to cross in Layer 1.</p>
+
+        <p>The key insight: exponential improvements in Layer 0 (hardware, algorithms, architecture) drive capabilities in Layer 1 toward discrete thresholds. When multiple thresholds cross simultaneously—reasoning + working memory + time on task + cost all becoming viable at once—entire new deployment categories unlock in Layer 3.</p>
+
+        <p>Layer 2 determines the timing. Lovable deployed mid-2024 when human-in-the-loop patterns made quality issues manageable. Claude Code waited until 2025 because it needed reliable tool use and multi-agent coordination. Same exponential technical curve, different Layer 2 requirements, different deployment timing.</p>
+    </div>
+
+    <!-- Technical Foundations Detail Cards -->
+    <div style="max-width: 1200px; margin: 56px auto;">
+        <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; padding: 8px 0; display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--rule); padding-top: 16px; color: var(--l1);">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--l1);"></span> TECHNICAL FOUNDATIONS — MEASURED DATA
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 48px;">
+            <!-- Hardware improvements -->
+            <div style="border: 1px solid var(--rule-dark); background: #fff; padding: 16px;">
+                <div style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">Hardware improvements</div>
+                <div style="font-size: 12px; color: var(--ink-light); line-height: 1.5; margin-bottom: 12px;">
+                    Better chips. The processors that run AI models keep getting faster and more efficient. More computing power per dollar means models can be bigger, train faster, and run cheaper. For the same $100 budget, you can now generate 150x more AI responses than in 2023.
+                </div>
+                <div style="height: 100px; position: relative; margin: 16px 0;">
+                    <svg width="100%" height="100" viewBox="0 0 300 100" style="overflow: visible;">
+                        <polyline points="10,85 80,70 150,50 220,25 290,10" fill="none" stroke="#2563eb" stroke-width="2"/>
+                        <circle cx="10" cy="85" r="3" fill="#2563eb"/>
+                        <circle cx="80" cy="70" r="3" fill="#2563eb"/>
+                        <circle cx="150" cy="50" r="3" fill="#2563eb"/>
+                        <circle cx="220" cy="25" r="3" fill="#2563eb"/>
+                        <circle cx="290" cy="10" r="3" fill="#2563eb"/>
+                        <text x="10" y="100" font-size="10" fill="#9ca3af">2023</text>
+                        <text x="270" y="100" font-size="10" fill="#9ca3af">2026</text>
+                    </svg>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 12px; border-top: 1px solid var(--rule);">
+                    <div style="font-size: 11px; color: var(--ink-faint);">Compute per dollar</div>
+                    <div style="font-family: 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 500; color: var(--green);">150x gain</div>
+                </div>
+                <div style="font-size: 11px; color: var(--ink-faint); margin-top: 8px;">Same budget gets you 150x more inference in 3 years.</div>
+            </div>
+
+            <!-- Algorithmic efficiency -->
+            <div style="border: 1px solid var(--rule-dark); background: #fff; padding: 16px;">
+                <div style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">Algorithmic efficiency</div>
+                <div style="font-size: 12px; color: var(--ink-light); line-height: 1.5; margin-bottom: 12px;">
+                    Smarter ways to train models. Like finding a shorter route instead of buying a faster car. Researchers keep finding better methods to train AI that get the same quality with less computing power. For the same training budget, you can now train a model 280x better than 2023, or build models 142x smaller that achieve the same quality.
+                </div>
+                <div style="height: 100px; position: relative; margin: 16px 0;">
+                    <svg width="100%" height="100" viewBox="0 0 300 100" style="overflow: visible;">
+                        <polyline points="10,85 80,68 150,50 220,28 290,12" fill="none" stroke="#2563eb" stroke-width="2"/>
+                        <circle cx="10" cy="85" r="3" fill="#2563eb"/>
+                        <circle cx="80" cy="68" r="3" fill="#2563eb"/>
+                        <circle cx="150" cy="50" r="3" fill="#2563eb"/>
+                        <circle cx="220" cy="28" r="3" fill="#2563eb"/>
+                        <circle cx="290" cy="12" r="3" fill="#2563eb"/>
+                        <text x="10" y="100" font-size="10" fill="#9ca3af">2023</text>
+                        <text x="270" y="100" font-size="10" fill="#9ca3af">2026</text>
+                    </svg>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 12px; border-top: 1px solid var(--rule);">
+                    <div style="font-size: 11px; color: var(--ink-faint);">Training efficiency</div>
+                    <div style="font-family: 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 500; color: var(--green);">280x gain</div>
+                </div>
+                <div style="font-size: 11px; color: var(--ink-faint); margin-top: 8px;">Same compute budget trains 280x better model. Or 142x smaller for same quality.</div>
+            </div>
+
+            <!-- Architecture & infrastructure -->
+            <div style="border: 1px solid var(--rule-dark); background: #fff; padding: 16px;">
+                <div style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">Architecture & infrastructure</div>
+                <div style="font-size: 12px; color: var(--ink-light); line-height: 1.5; margin-bottom: 12px;">
+                    How the model is built and how it runs. Four big changes: (1) Run only relevant parts per question instead of the whole model — saves computing power. (2) Let the model think out loud step by step instead of jumping to an answer — better at hard problems. (3) Train a small cheap model to copy a big expensive one — keeps 80-95% quality at 10-50x lower cost. (4) How much text the model can see at once. Went from 4,000 words to over 10 million words in 3 years.
+                </div>
+                <div style="height: 100px; position: relative; margin: 16px 0;">
+                    <svg width="100%" height="100" viewBox="0 0 300 100" style="overflow: visible;">
+                        <polyline points="10,88 80,72 150,52 220,28 290,10" fill="none" stroke="#2563eb" stroke-width="2"/>
+                        <circle cx="10" cy="88" r="3" fill="#2563eb"/>
+                        <circle cx="80" cy="72" r="3" fill="#2563eb"/>
+                        <circle cx="150" cy="52" r="3" fill="#2563eb"/>
+                        <circle cx="220" cy="28" r="3" fill="#2563eb"/>
+                        <circle cx="290" cy="10" r="3" fill="#2563eb"/>
+                        <text x="10" y="100" font-size="10" fill="#9ca3af">2023</text>
+                        <text x="270" y="100" font-size="10" fill="#9ca3af">2026</text>
+                    </svg>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 12px; border-top: 1px solid var(--rule);">
+                    <div style="font-size: 11px; color: var(--ink-faint);">Progress</div>
+                    <div style="font-family: 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 500; color: var(--green);">2500x gain</div>
+                </div>
+                <div style="font-size: 11px; color: var(--ink-faint); margin-top: 8px;">Can see 2,500x more text at once (4K → 10M words). Each technique: 2-4x efficiency.</div>
+            </div>
+        </div>
+
+
+    <h2 style="max-width: 680px; margin: 56px auto 24px;">Explore the Framework</h2>
+
+    <div class="diagram-wrap">
+        <div class="diagram-instruction">Click any item to trace its connections across layers</div>
+
+        <div class="diagram-flow" id="diagram-flow">
+            <div class="layer-col l1" id="col-l0">
+                <div class="layer-col-label"><span class="dot"></span> Layer 0: Technical</div>
+                <div class="node-stack" id="nodes-l0"></div>
+            </div>
+            <div class="layer-col l2" id="col-l1">
+                <div class="layer-col-label"><span class="dot"></span> Layer 1: Capabilities</div>
+                <div class="node-stack" id="nodes-l1"></div>
+            </div>
+            <div class="layer-col l3" id="col-l2">
+                <div class="layer-col-label"><span class="dot"></span> Layer 2: Barriers & Enablers</div>
+                <div class="node-stack" id="nodes-l2"></div>
+            </div>
+            <div class="layer-col l4" id="col-l3">
+                <div class="layer-col-label"><span class="dot"></span> Layer 3: Deployment</div>
+                <div class="node-stack" id="nodes-l3"></div>
+            </div>
+            <svg class="svg-connections" id="svg-conn"></svg>
+        </div>
+
+        <div class="detail-panel" id="detail-panel">
+            <div class="detail-panel-header">
+                <div class="detail-panel-title" id="dp-title"></div>
+                <div class="detail-panel-close" id="dp-close">&times;</div>
+            </div>
+            <div class="detail-panel-metric" id="dp-metric"></div>
+            <div class="detail-panel-trend" id="dp-trend"></div>
+            <div class="detail-panel-connections" id="dp-conn-up" style="display:none">
+                <div class="detail-panel-connections-label" id="dp-conn-up-label"></div>
+                <div class="detail-conn-list" id="dp-conn-up-list"></div>
+            </div>
+            <div class="detail-panel-connections" id="dp-conn-down" style="display:none">
+                <div class="detail-panel-connections-label" id="dp-conn-down-label"></div>
+                <div class="detail-conn-list" id="dp-conn-down-list"></div>
+            </div>
+            <div class="detail-panel-source" id="dp-source"></div>
+        </div>
+    </div>
+
+    <div class="prose">
+        <h2>Case Studies</h2>
+        <p>See how specific deployments became viable when capabilities crossed thresholds and the right enablers matured:</p>
+    </div>
+
+    <div style="max-width: 900px; margin: 40px auto;">
+        <!-- Tabs -->
+        <div style="display: flex; gap: 0; border-bottom: 2px solid var(--rule-dark); margin-bottom: 32px;">
+            <button class="case-tab active" onclick="loadCaseStudy('lovable-before-after.html', this)" style="flex: 1; padding: 16px 24px; background: none; border: none; border-bottom: 3px solid var(--accent); font-size: 15px; font-weight: 600; cursor: pointer; color: var(--ink); font-family: inherit; margin-bottom: -2px; text-align: center;">
+                Lovable (Mid-2024)
+            </button>
+            <button class="case-tab" onclick="loadCaseStudy('customer-support-threshold-unlock.html', this)" style="flex: 1; padding: 16px 24px; background: none; border: none; border-bottom: 3px solid transparent; font-size: 15px; font-weight: 500; cursor: pointer; color: var(--ink-light); font-family: inherit; margin-bottom: -2px; text-align: center;">
+                Customer Support (Mid-2024)
+            </button>
+            <button class="case-tab" onclick="loadCaseStudy('claude-code-threshold-unlock-v2.html', this)" style="flex: 1; padding: 16px 24px; background: none; border: none; border-bottom: 3px solid transparent; font-size: 15px; font-weight: 500; cursor: pointer; color: var(--ink-light); font-family: inherit; margin-bottom: -2px; text-align: center;">
+                Claude Code (2025-2026)
+            </button>
+        </div>
+
+        <!-- Case study content container -->
+        <div id="case-study-content" style="min-height: 600px;">
+            <iframe src="lovable-before-after.html" style="width: 100%; height: 1200px; border: none; display: block;"></iframe>
+        </div>
+    </div>
+
+    <script>
+    function loadCaseStudy(url, button) {
+        // Update iframe
+        document.querySelector('#case-study-content iframe').src = url;
+
+        // Update tab styles
+        document.querySelectorAll('.case-tab').forEach(tab => {
+            tab.style.borderBottomColor = 'transparent';
+            tab.style.fontWeight = '500';
+            tab.style.color = 'var(--ink-light)';
+        });
+
+        button.style.borderBottomColor = 'var(--accent)';
+        button.style.fontWeight = '600';
+        button.style.color = 'var(--ink)';
+    }
+    </script>
+
+    <div class="prose">
+        <h2>Why This Matters</h2>
+
+        <p>Most AI discourse focuses on Layer 0 (technical progress) or Layer 3 (what got deployed). The gap between them—Layers 1 and 2—explains why progress feels exponential and unpredictable.</p>
+
+        <p>Layer 1 capabilities don't improve smoothly. They cross discrete viability thresholds that suddenly make entire categories of work possible. Working memory going from 4K to 200K tokens wasn't a 50x improvement—it was the difference between "can't hold a conversation about a codebase" and "can".</p>
+
+        <p>Layer 2 barriers and enablers determine what actually ships. Better models don't automatically solve organizational barriers like security, context access, or change management. But they do make product enablers viable—RAG became practical when context windows hit 200K, multi-agent coordination became economical when costs dropped 150x.</p>
+
+        <p>Understanding these four layers helps predict what becomes possible next and why some capabilities translate to deployments faster than others.</p>
+    </div>
+</div>
+
+<script>
+// [Include the full JavaScript from four-layer-model.html here - the items, connections, and all the functions]
+// Data
+const items = {
+    // Layer 0: Technical
+    'hardware': { layer: 0, name: 'Hardware',
+        what: 'Better chips, cheaper inference',
+        metric: '$60/M → $0.40/M tokens (150x cheaper)',
+        trend: 'Improving exponentially. Cost dropped 150x in 3 years.',
+        source: 'Model pricing pages.' },
+    'algo-efficiency': { layer: 0, name: 'Algorithmic Efficiency',
+        what: 'Smarter training methods',
+        metric: '280x cheaper to train to GPT-4 level',
+        trend: 'Doubling every ~8 months.',
+        source: 'Epoch AI research.' },
+    'architecture': { layer: 0, name: 'Architecture',
+        what: 'New ways to build models. MoE, CoT, distillation, extended context.',
+        metric: 'Context: 4K → 10M tokens (2,500x)',
+        trend: 'Multiple 2-4x efficiency gains.',
+        source: 'Model announcements.' },
+
+    // Layer 1: Capabilities (including quality issues)
+    'reasoning': { layer: 1, name: 'Reasoning',
+        what: 'Sequential decision-making. Can it handle a chain of 50-80 decisions where each one depends on the previous? Covers multi-step logic, evaluating tradeoffs, and applying judgment rules consistently.',
+        metric: 'SWE-bench: 49% (Oct 2024) → 82% (Mar 2026)',
+        trend: 'Closing gap to human performance at ~50% of remaining gap per 6-10 months. Driven by Layer 0: better algorithms, more training compute, architectural improvements (chain-of-thought, test-time compute).',
+        source: 'SWE-bench leaderboard, GPQA Diamond scores.' },
+    'context': { layer: 1, name: 'Working Memory',
+        what: 'How much information can the model hold and reference simultaneously? Determines whether it can handle an entire codebase, a full conversation history with customer data, or a research literature review all at once.',
+        metric: '4K tokens (2023) → 10M tokens (2026) = 2,500x',
+        trend: 'Architectural breakthrough: efficient attention mechanisms (FlashAttention), KV-cache optimization, plus hardware improvements enabling larger memory footprints. Doubling approximately every 8-12 months since 2023.',
+        source: 'Model announcements: GPT-4 (8K), Claude 2 (100K), Gemini 1.5 (1M), Gemini 2.0 (10M).' },
+    'autonomy': { layer: 1, name: 'Time on Task',
+        what: 'How long can the AI work on a task without human intervention while still making progress? Measured as the duration of autonomous work before quality degrades or the model gets stuck.',
+        metric: 'Minutes (2023) → hours (2024) → days (2025-2026)',
+        trend: 'Doubling every 4-7 months (METR measurements). Driven by reasoning improvements (longer chains of thought don\'t collapse) and working memory (holds full context without forgetting).',
+        source: 'METR autonomous AI evaluations.' },
+    'cost': { layer: 1, name: 'Cost',
+        what: 'Inference cost per million tokens. Determines whether a workflow is economically viable at scale. A customer service bot handling millions of chats needs sub-cent costs per interaction.',
+        metric: '$60/M tokens (GPT-4, March 2023) → $0.40/M (GPT-5 Nano, March 2026) = 150x cheaper',
+        trend: 'Declining ~10x per year. Driven by all three Layer 0 axes: better chips (hardware), better training methods (algorithmic efficiency), better architectures (MoE, distillation). Multi-agent workflows became economically viable when costs dropped below ~$2/M tokens.',
+        source: 'API pricing pages, Stanford HAI AI Index 2025.' },
+    'hallucination': { layer: 1, barrier: true, name: 'Hallucination',
+        what: 'The model generates plausible-sounding content that is factually wrong. It invents sources that don\'t exist, fabricates statistics, or confidently states false information. Caused by the model\'s training objective (predict next token based on patterns) not being aligned with truth-seeking.',
+        metric: '16-48% fabrication rate in reasoning models (higher than non-reasoning models)',
+        trend: 'Not improving from Layer 0 gains—reasoning models actually hallucinate MORE because longer chains of thought provide more opportunities to drift from truth. Can be reduced 15-82% through RAG (giving the model real documents to reference), but that\'s a Layer 2 enabler, not a capability improvement.',
+        source: 'Enterprise deployment data, RAG effectiveness studies.' },
+    'calibration': { layer: 1, barrier: true, name: 'Calibration',
+        what: 'The model\'s ability to accurately assess its own confidence. A well-calibrated model says "I\'m uncertain" when it doesn\'t know and "I\'m confident" only when it\'s actually correct. Poor calibration means the model confidently states wrong answers.',
+        metric: 'Inconsistent across models and tasks',
+        trend: 'No systematic improvement from Layer 0. Some models get better, others get worse. GPT-4 showed good calibration on some tasks, o1 showed worse calibration on others. This is an alignment/training problem, not a scaling problem.',
+        source: 'Model evaluations, calibration studies.' },
+    'taste': { layer: 1, barrier: true, name: 'Taste',
+        what: 'Aesthetic judgment. The model defaults to safe, generic, corporate-approved outputs. It produces grammatically correct but bland writing, visually coherent but uninspired designs, technically sound but forgettable creative work.',
+        metric: 'No quantitative measurement—subjective quality',
+        trend: 'Not improving automatically. Better models produce more polished mediocrity, but they don\'t develop distinctive voice, take creative risks, or produce work with personality unless explicitly prompted and curated. This is a training data problem (internet-scale data regresses to the mean) and an objective function problem (RLHF optimizes for human raters who prefer safe outputs).',
+        source: 'User feedback, creative professional assessments.' },
+    'effort': { layer: 1, barrier: true, name: 'Effort',
+        what: 'The model takes shortcuts when it can get away with it. Skips edge cases, doesn\'t test thoroughly, writes comments that say "TODO: implement this later," or produces minimum viable output rather than high-quality work.',
+        metric: 'Inconsistent—depends on task complexity and oversight',
+        trend: 'Better capabilities don\'t automatically mean more thoroughness. The model is optimized to complete tasks, not to do them well. Human-in-the-loop review (Layer 2 enabler) is required to catch and correct shortcuts.',
+        source: 'Enterprise feedback, code review data.' },
+
+    // Layer 2: Barriers & Enablers
+    'context-access': { layer: 2, barrier: true, name: 'Context Access',
+        what: 'The AI doesn\'t have access to the information it needs to do the job. Customer support requires CRM history, sales outreach requires account data, code review requires the full repository. Each enterprise has proprietary data in proprietary systems (SAP, Salesforce, internal wikis, databases).',
+        metric: 'Integration complexity varies by organization',
+        trend: 'Zero improvement from Layer 0. A better model doesn\'t magically connect to your systems. Requires custom integration work: APIs, data pipelines, authentication, access controls. Every deployment is different.',
+        source: 'Enterprise IT, system integration projects.' },
+    'security': { layer: 2, barrier: true, name: 'Security',
+        what: 'Data sent to an AI model might be exposed: training data poisoning, prompt injection attacks, model outputs leaking sensitive information, compliance violations (GDPR, HIPAA, SOC 2). Legal and regulatory risk.',
+        metric: 'Binary: passes security/compliance audit or doesn\'t',
+        trend: 'Zero improvement from Layer 0. Solutions exist (on-prem deployment, VPC, regional data centers, contractual guarantees) but require significant investment, legal review, and ongoing monitoring. A faster model doesn\'t make it more secure.',
+        source: 'Security audits, compliance teams, legal departments.' },
+    'change-mgmt': { layer: 2, barrier: true, name: 'Change Management',
+        what: 'Employees resist using the AI. Trust issues ("it makes mistakes"), workflow disruption ("I have to learn new tools"), job security fears ("will this replace me?"), organizational inertia ("we\'ve always done it this way").',
+        metric: 'Adoption rate, employee sentiment surveys',
+        trend: 'Zero improvement from Layer 0. A better model doesn\'t make people trust it more—sometimes makes it worse (uncanny valley, overconfidence in AI leads to complacency). Requires training programs, change management consultants, gradual rollout, executive sponsorship. This is human and organizational, not technical.',
+        source: 'HR departments, change management studies.' },
+    'rag': { layer: 2, enabler: true, name: 'RAG',
+        what: 'Retrieval-Augmented Generation: retrieve relevant documents from a knowledge base and include them in the model\'s context before answering. Reduces hallucination because the model can quote from real sources instead of making things up.',
+        metric: '15-82% hallucination reduction (varies by implementation)',
+        trend: 'Became viable mid-2024 when context windows crossed 200K tokens—finally enough space to fit retrieved documents plus the conversation. Before that, context was too small to include meaningful retrieval. Enabled by Layer 1 capability threshold (working memory).',
+        source: 'RAG deployment studies, enterprise AI implementations.' },
+    'tool-use': { layer: 2, enabler: true, name: 'Tool Use',
+        what: 'Let the AI call external tools: search the web for current information, query a database for exact data, run code to verify calculations, call APIs to take actions (send email, update CRM, etc.). Factual accuracy jumps because the model gets real data instead of guessing.',
+        metric: 'Factual accuracy: ~47% baseline → 90-95% with tools',
+        trend: 'Became reliable mid-2024 when models got good enough at structured output (JSON function calls) and reasoning (deciding which tool to use when). Required Layer 1 reasoning threshold—earlier models would call wrong tools or format requests incorrectly.',
+        source: 'Function calling benchmarks, OpenAI/Anthropic tool use evals.' },
+    'multi-agent': { layer: 2, enabler: true, name: 'Multi-Agent',
+        what: 'Multiple AI instances working together. One agent drafts an answer, another fact-checks it, a third reviews for tone, a coordinator decides if it\'s ready to ship. Debate between agents catches errors that a single model would miss.',
+        metric: '37-59% hallucination reduction through multi-agent debate',
+        trend: 'Became economically viable when inference costs dropped from $60/M to $0.40/M tokens—running 3-5 agents in parallel went from prohibitively expensive to cheap. Enabled by Layer 1 cost threshold.',
+        source: 'Multi-agent research papers, enterprise deployments.' },
+    'hitl': { layer: 2, enabler: true, name: 'Human-in-the-Loop',
+        what: 'AI generates a draft, human reviews and approves before it ships. Catches hallucinations, taste problems, effort shortcuts. The human provides judgment the AI lacks.',
+        metric: 'Effectiveness depends on review quality and volume',
+        trend: 'More practical as AI drafts improved (Layer 1 capabilities). When AI was terrible, reviewing took as long as doing it yourself. Now AI does 80-90% of the work correctly, human fixes the 10-20%. Workflow became viable when capability crossed "good enough to review" threshold.',
+        source: 'Workflow design, enterprise implementations (Klarna, customer support).' },
+    'integrations': { layer: 2, enabler: true, name: 'Integrations',
+        what: 'Connect the AI to your systems: CRM (Salesforce), communication (Slack, email), documentation (Notion, Confluence), code (GitHub), data (databases, data warehouses). The AI needs access to act on your behalf.',
+        metric: 'Integration complexity varies by organization',
+        trend: 'More valuable to integrate when Layer 1 capabilities crossed reliability thresholds. No point connecting AI to your CRM if it can\'t handle customer conversations competently. Integration ROI increased as reasoning, working memory, and cost all improved.',
+        source: 'Enterprise IT, system integration projects.' },
+
+    // Layer 3: Deployment
+    'single-task': { layer: 3, name: 'Single-Task Automation',
+        what: 'Classify, extract, score. One-step operations.',
+        metric: 'Widely deployed',
+        trend: 'Works well when task is narrow and hallucination risk is manageable.',
+        source: 'Enterprise deployments.' },
+    'multi-step': { layer: 3, name: 'Multi-Step Workflows',
+        what: 'Support tickets, contract review, bug fixes.',
+        metric: 'Deploying fast',
+        trend: 'Enabled by autonomy crossing hours threshold.',
+        source: 'Enterprise case studies.' },
+    'autonomous-agents': { layer: 3, name: 'Autonomous Agents',
+        what: 'Multi-day research, complex problem-solving.',
+        metric: 'Needs heavy review',
+        trend: 'Technically possible but trust barriers remain.',
+        source: 'METR benchmarks.' },
+    'end-to-end': { layer: 3, name: 'End-to-End Processes',
+        what: 'Full customer lifecycle, hire-to-retire.',
+        metric: 'Blocked by Layer 2',
+        trend: 'Requires addressing organizational barriers and quality issues.',
+        source: 'Enterprise roadmaps.' }
+};
+
+const connections = [
+    // Layer 0 -> Layer 1 (capabilities)
+    ['hardware', 'reasoning', 0.6, false],
+    ['hardware', 'autonomy', 0.8, false],
+    ['hardware', 'cost', 0.9, false],
+    ['algo-efficiency', 'reasoning', 0.9, false],
+    ['algo-efficiency', 'cost', 0.8, false],
+    ['architecture', 'reasoning', 0.9, false],
+    ['architecture', 'context', 0.9, false],
+    ['architecture', 'autonomy', 0.7, false],
+    ['architecture', 'cost', 0.6, false],
+
+    // Layer 0 -> Layer 1 (quality issues - weak connections)
+    ['architecture', 'hallucination', 0.3, false],
+    ['architecture', 'calibration', 0.2, false],
+    ['algo-efficiency', 'taste', 0.2, false],
+    ['architecture', 'effort', 0.2, false],
+
+    // Layer 1 capabilities -> Layer 2 enablers
+    ['context', 'rag', 0.9, false],
+    ['cost', 'rag', 0.7, false],
+    ['reasoning', 'tool-use', 0.9, false],
+    ['cost', 'multi-agent', 0.9, false],
+    ['reasoning', 'multi-agent', 0.7, false],
+    ['cost', 'hitl', 0.6, false],
+    ['reasoning', 'integrations', 0.7, false],
+
+    // Layer 1 -> Layer 3
+    ['reasoning', 'single-task', 0.8, false],
+    ['cost', 'single-task', 0.9, false],
+    ['reasoning', 'multi-step', 0.9, false],
+    ['autonomy', 'multi-step', 0.9, false],
+    ['context', 'multi-step', 0.7, false],
+    ['cost', 'multi-step', 0.8, false],
+    ['reasoning', 'autonomous-agents', 0.9, false],
+    ['autonomy', 'autonomous-agents', 0.9, false],
+    ['context', 'autonomous-agents', 0.8, false],
+    ['reasoning', 'end-to-end', 0.8, false],
+    ['autonomy', 'end-to-end', 0.9, false],
+    ['context', 'end-to-end', 0.9, false],
+    ['cost', 'end-to-end', 0.7, false],
+
+    // Layer 1 quality barriers -> Layer 3 (blocking)
+    ['hallucination', 'single-task', 0.4, true],
+    ['hallucination', 'multi-step', 0.6, true],
+    ['hallucination', 'autonomous-agents', 0.8, true],
+    ['hallucination', 'end-to-end', 0.9, true],
+    ['calibration', 'autonomous-agents', 0.9, true],
+    ['calibration', 'end-to-end', 0.9, true],
+    ['taste', 'end-to-end', 0.7, true],
+    ['effort', 'autonomous-agents', 0.7, true],
+    ['effort', 'end-to-end', 0.8, true],
+
+    // Layer 2 org barriers -> Layer 3 (blocking)
+    ['context-access', 'multi-step', 0.7, true],
+    ['context-access', 'autonomous-agents', 0.8, true],
+    ['context-access', 'end-to-end', 0.9, true],
+    ['security', 'single-task', 0.6, true],
+    ['security', 'multi-step', 0.7, true],
+    ['security', 'autonomous-agents', 0.8, true],
+    ['security', 'end-to-end', 0.9, true],
+    ['change-mgmt', 'multi-step', 0.6, true],
+    ['change-mgmt', 'autonomous-agents', 0.7, true],
+    ['change-mgmt', 'end-to-end', 0.9, true],
+
+    // Layer 2 enablers -> Layer 3
+    ['rag', 'single-task', 0.6, false],
+    ['rag', 'multi-step', 0.8, false],
+    ['rag', 'autonomous-agents', 0.7, false],
+    ['rag', 'end-to-end', 0.8, false],
+    ['tool-use', 'single-task', 0.7, false],
+    ['tool-use', 'multi-step', 0.8, false],
+    ['tool-use', 'autonomous-agents', 0.9, false],
+    ['tool-use', 'end-to-end', 0.8, false],
+    ['multi-agent', 'multi-step', 0.7, false],
+    ['multi-agent', 'autonomous-agents', 0.9, false],
+    ['multi-agent', 'end-to-end', 0.8, false],
+    ['hitl', 'single-task', 0.8, false],
+    ['hitl', 'multi-step', 0.8, false],
+    ['hitl', 'autonomous-agents', 0.6, false],
+    ['integrations', 'single-task', 0.7, false],
+    ['integrations', 'multi-step', 0.9, false],
+    ['integrations', 'autonomous-agents', 0.8, false],
+    ['integrations', 'end-to-end', 0.9, false]
+];
+
+const layerOrder = {
+    0: ['hardware', 'algo-efficiency', 'architecture'],
+    1: ['reasoning', 'context', 'autonomy', 'cost', 'hallucination', 'calibration', 'taste', 'effort'],
+    2: ['context-access', 'security', 'change-mgmt', 'rag', 'tool-use', 'multi-agent', 'hitl', 'integrations'],
+    3: ['single-task', 'multi-step', 'autonomous-agents', 'end-to-end']
+};
+
+// State
+const nodeEls = {};
+let selectedNode = null;
+
+// Build diagram
+function buildDiagram() {
+    [0, 1, 2, 3].forEach(layer => {
+        const stack = document.getElementById('nodes-l' + layer);
+        layerOrder[layer].forEach(id => {
+            const it = items[id];
+            if (!it) return;
+
+            const pill = document.createElement('div');
+            pill.className = 'node-pill' + (it.barrier ? ' barrier' : '') + (it.enabler ? ' enabler' : '');
+            pill.textContent = it.name;
+            pill.dataset.id = id;
+            pill.addEventListener('click', (e) => { e.stopPropagation(); toggleNode(id); });
+            stack.appendChild(pill);
+            nodeEls[id] = pill;
+        });
+    });
+    drawAllConnections();
+}
+
+// Draw SVG connections
+function drawAllConnections() {
+    const svg = document.getElementById('svg-conn');
+    svg.innerHTML = '';
+    const flowRect = document.getElementById('diagram-flow').getBoundingClientRect();
+
+    connections.forEach(([srcId, tgtId, strength, isBarrier]) => {
+        const srcEl = nodeEls[srcId];
+        const tgtEl = nodeEls[tgtId];
+        if (!srcEl || !tgtEl) return;
+
+        const srcRect = srcEl.getBoundingClientRect();
+        const tgtRect = tgtEl.getBoundingClientRect();
+
+        const x1 = srcRect.right - flowRect.left;
+        const y1 = srcRect.top + srcRect.height/2 - flowRect.top;
+        const x2 = tgtRect.left - flowRect.left;
+        const y2 = tgtRect.top + tgtRect.height/2 - flowRect.top;
+
+        const dx = Math.abs(x2 - x1);
+        const cx1 = x1 + dx * 0.4;
+        const cx2 = x2 - dx * 0.4;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1},${y1} C ${cx1},${y1} ${cx2},${y2} ${x2},${y2}`);
+        path.setAttribute('class', isBarrier ? 'barrier' : '');
+        path.dataset.src = srcId;
+        path.dataset.tgt = tgtId;
+        svg.appendChild(path);
+    });
+}
+
+// Get connected nodes
+function getConnectedSet(id) {
+    const it = items[id];
+    const connected = new Set([id]);
+
+    // Direct neighbors
+    connections.forEach(([src, tgt]) => {
+        if (src === id) connected.add(tgt);
+        if (tgt === id) connected.add(src);
+    });
+
+    // Transitivity for clicking early layers
+    if (it.layer === 0) {
+        const l1 = new Set();
+        connections.forEach(([src, tgt]) => {
+            if (src === id && items[tgt]?.layer === 1) l1.add(tgt);
+        });
+        l1.forEach(l1id => {
+            connected.add(l1id);
+            connections.forEach(([src, tgt]) => {
+                if (src === l1id && items[tgt]?.layer === 2) connected.add(tgt);
+                if (src === l1id && items[tgt]?.layer === 3) connected.add(tgt);
+            });
+        });
+    }
+
+    if (it.layer === 1) {
+        connections.forEach(([src, tgt]) => {
+            if (src === id && items[tgt]?.layer === 2) connected.add(tgt);
+            if (src === id && items[tgt]?.layer === 3) connected.add(tgt);
+            if (tgt === id && items[src]?.layer === 0) connected.add(src);
+        });
+        const l2 = new Set();
+        connections.forEach(([src, tgt]) => {
+            if (src === id && items[tgt]?.layer === 2) l2.add(tgt);
+        });
+        l2.forEach(l2id => {
+            connections.forEach(([src, tgt]) => {
+                if (src === l2id && items[tgt]?.layer === 3) connected.add(tgt);
+            });
+        });
+    }
+
+    if (it.layer === 2) {
+        connections.forEach(([src, tgt]) => {
+            if (src === id && items[tgt]?.layer === 3) connected.add(tgt);
+            if (tgt === id && items[src]?.layer === 1) connected.add(src);
+        });
+        const l1 = new Set();
+        connections.forEach(([src, tgt]) => {
+            if (tgt === id && items[src]?.layer === 1) l1.add(src);
+        });
+        l1.forEach(l1id => {
+            connections.forEach(([src, tgt]) => {
+                if (tgt === l1id && items[src]?.layer === 0) connected.add(src);
+            });
+        });
+    }
+
+    if (it.layer === 3) {
+        const l2 = new Set();
+        connections.forEach(([src, tgt]) => {
+            if (tgt === id && items[src]?.layer === 2) l2.add(src);
+        });
+        l2.forEach(l2id => {
+            connected.add(l2id);
+            connections.forEach(([src, tgt]) => {
+                if (tgt === l2id && items[src]?.layer === 1) connected.add(src);
+            });
+        });
+        const l1 = new Set();
+        connections.forEach(([src, tgt]) => {
+            if (tgt === id && items[src]?.layer === 1) l1.add(src);
+        });
+        l1.forEach(l1id => {
+            connected.add(l1id);
+            connections.forEach(([src, tgt]) => {
+                if (tgt === l1id && items[src]?.layer === 0) connected.add(src);
+            });
+        });
+    }
+
+    return connected;
+}
+
+// Toggle node selection
+function toggleNode(id) {
+    if (selectedNode === id) {
+        deselectAll();
+    } else {
+        selectNode(id);
+    }
+}
+
+function selectNode(id) {
+    selectedNode = id;
+    const connected = getConnectedSet(id);
+
+    Object.keys(nodeEls).forEach(nid => {
+        if (connected.has(nid)) {
+            nodeEls[nid].classList.add('active');
+            nodeEls[nid].classList.remove('dimmed');
+        } else {
+            nodeEls[nid].classList.remove('active');
+            nodeEls[nid].classList.add('dimmed');
+        }
+    });
+
+    highlightConnections(id, connected);
+    showDetailPanel(id, connected);
+}
+
+function deselectAll() {
+    selectedNode = null;
+    Object.values(nodeEls).forEach(el => {
+        el.classList.remove('active', 'dimmed');
+    });
+    document.querySelectorAll('.svg-connections path').forEach(p => {
+        p.classList.remove('highlighted');
+    });
+    document.getElementById('detail-panel').classList.remove('visible');
+}
+
+function highlightConnections(id, connected) {
+    document.querySelectorAll('.svg-connections path').forEach(path => {
+        const src = path.dataset.src;
+        const tgt = path.dataset.tgt;
+        if (connected.has(src) && connected.has(tgt)) {
+            path.classList.add('highlighted');
+        } else {
+            path.classList.remove('highlighted');
+        }
+    });
+}
+
+function showDetailPanel(id, connected) {
+    const it = items[id];
+    const panel = document.getElementById('detail-panel');
+
+    document.getElementById('dp-title').textContent = it.name;
+    document.getElementById('dp-metric').textContent = it.metric;
+    document.getElementById('dp-trend').textContent = it.trend;
+    document.getElementById('dp-source').textContent = 'Source: ' + it.source;
+
+    // Driven by
+    const drivenBy = [];
+    connections.forEach(([src, tgt]) => {
+        if (tgt === id && connected.has(src)) drivenBy.push(items[src].name);
+    });
+    if (drivenBy.length > 0) {
+        document.getElementById('dp-conn-up').style.display = 'block';
+        document.getElementById('dp-conn-up-label').textContent = 'Driven by:';
+        document.getElementById('dp-conn-up-list').innerHTML = drivenBy.map(n =>
+            `<div class="detail-conn-pill">${n}</div>`
+        ).join('');
+    } else {
+        document.getElementById('dp-conn-up').style.display = 'none';
+    }
+
+    // Enables
+    const enables = [];
+    connections.forEach(([src, tgt]) => {
+        if (src === id && connected.has(tgt)) enables.push(items[tgt].name);
+    });
+    if (enables.length > 0) {
+        document.getElementById('dp-conn-down').style.display = 'block';
+        document.getElementById('dp-conn-down-label').textContent = 'Enables:';
+        document.getElementById('dp-conn-down-list').innerHTML = enables.map(n =>
+            `<div class="detail-conn-pill">${n}</div>`
+        ).join('');
+    } else {
+        document.getElementById('dp-conn-down').style.display = 'none';
+    }
+
+    panel.classList.add('visible');
+}
+
+// Event listeners
+document.getElementById('dp-close').addEventListener('click', deselectAll);
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.node-pill') && !e.target.closest('.detail-panel')) {
+        deselectAll();
+    }
+});
+
+window.addEventListener('resize', () => {
+    drawAllConnections();
+    if (selectedNode) {
+        const connected = getConnectedSet(selectedNode);
+        highlightConnections(selectedNode, connected);
+    }
+});
+
+// Initialize
+buildDiagram();
+</script>
+
+</body>
+</html>

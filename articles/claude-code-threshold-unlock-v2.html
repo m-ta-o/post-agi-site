@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Made Claude Code Possible</title>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --paper: #fdfcfa;
+            --ink: #1a1a1a; --ink-light: #6b7280; --ink-faint: #9ca3af;
+            --rule: #e5e5e5; --rule-dark: #d4d4d4;
+            --green: #15803d;
+            --l1: #2563eb; --l1-bg: rgba(37,99,235,0.04); --l1-border: rgba(37,99,235,0.15);
+            --l2: #15803d; --l2-bg: rgba(21,128,61,0.04); --l2-border: rgba(21,128,61,0.15);
+            --l3: #b91c1c; --l3-bg: rgba(185,28,28,0.04); --l3-border: rgba(185,28,28,0.15);
+            --l4: #ca8a04; --l4-bg: rgba(202,138,4,0.04); --l4-border: rgba(202,138,4,0.15);
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--paper); color: var(--ink);
+            line-height: 1.7; font-size: 17px;
+            padding: 60px 24px;
+        }
+        .outer { max-width: 1200px; margin: 0 auto; }
+        h1 { font-family: 'Newsreader', Georgia, serif; font-size: 32px; font-weight: 400; text-align: center; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: var(--ink-light); font-size: 15px; margin-bottom: 40px; }
+
+        /* Diagram containers */
+        .diagram-wrap { position: relative; margin: 40px 0; }
+        .diagram-instruction { font-size: 13px; color: var(--ink-faint); text-align: center; margin-bottom: 16px; }
+        .diagram-container { margin-bottom: 60px; }
+        .diagram-header { text-align: center; margin-bottom: 16px; }
+        .diagram-header h2 { font-family: 'Newsreader', Georgia, serif; font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+        .diagram-header .period-label { font-size: 13px; color: var(--ink-faint); }
+
+        .diagram-flow { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0; position: relative; }
+        .layer-col { padding: 20px 12px; position: relative; display: flex; flex-direction: column; min-height: 400px; }
+        .layer-col.l1 { background: var(--l1-bg); border: 1px solid var(--l1-border); border-radius: 8px 0 0 8px; border-right: none; }
+        .layer-col.l2 { background: var(--l2-bg); border: 1px solid var(--l2-border); border-left: none; border-right: none; }
+        .layer-col.l3 { background: var(--l3-bg); border: 1px solid var(--l3-border); border-left: none; border-right: none; }
+        .layer-col.l4 { background: var(--l4-bg); border: 1px solid var(--l4-border); border-radius: 0 8px 8px 0; border-left: none; }
+
+        .layer-col-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+        .layer-col-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .l1 .layer-col-label { color: var(--l1); }
+        .l1 .layer-col-label .dot { background: var(--l1); }
+        .l2 .layer-col-label { color: var(--l2); }
+        .l2 .layer-col-label .dot { background: var(--l2); }
+        .l3 .layer-col-label { color: var(--l3); }
+        .l3 .layer-col-label .dot { background: var(--l3); }
+        .l4 .layer-col-label { color: var(--l4); }
+        .l4 .layer-col-label .dot { background: var(--l4); }
+
+        .node-stack { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: space-around; }
+
+        .node-pill { font-size: 11px; font-weight: 500; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; user-select: none; position: relative; z-index: 2; line-height: 1.3; }
+        .node-pill:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .node-pill.active { box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+
+        /* Layer 0 pills */
+        .l1 .node-pill { background: #fff; border-color: var(--l1-border); color: var(--ink); }
+        .l1 .node-pill.active { background: var(--l1); color: #fff; border-color: var(--l1); }
+
+        /* Layer 1 pills (capabilities + quality issues) */
+        .l2 .node-pill { background: #fff; border-color: var(--l2-border); color: var(--ink); }
+        .l2 .node-pill.active { background: var(--l2); color: #fff; border-color: var(--l2); }
+        .l2 .node-pill.barrier { border-style: dashed; color: #b91c1c; }
+        .l2 .node-pill.barrier.active { background: #b91c1c; color: #fff; border-color: #b91c1c; }
+
+        /* Layer 2 pills (org barriers + enablers) */
+        .l3 .node-pill { background: #fff; border-color: var(--l3-border); color: #b91c1c; border-style: dashed; }
+        .l3 .node-pill.active { background: var(--l3); color: #fff; border-color: var(--l3); }
+        .l3 .node-pill.enabler { border-style: solid; color: var(--green); border-color: var(--l2-border); }
+        .l3 .node-pill.enabler.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+        /* Layer 3 pills */
+        .l4 .node-pill { background: #fff; border-color: var(--l4-border); color: var(--ink); }
+        .l4 .node-pill.active { background: var(--l4); color: #fff; border-color: var(--l4); }
+
+        /* Before/After specific styling */
+        .before-diagram .l2 .node-pill.capability {
+            background: #fecaca;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+        .before-diagram .l3 .node-pill { opacity: 0.4; }
+        .before-diagram .l4 .node-pill:not(.viable) { opacity: 0.4; }
+
+        .after-diagram .l2 .node-pill.capability.crossed {
+            background: #dcfce7;
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .after-diagram .l3 .node-pill.enabler.highlighted {
+            background: #dcfce7;
+        }
+        .after-diagram .l3 .node-pill.not-relevant {
+            opacity: 0.3;
+        }
+        .after-diagram .l4 .node-pill.claude-code {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border: 2px solid #c2410c;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Comparison arrows */
+        .comparison-arrows { position: relative; height: 40px; display: flex; align-items: center; justify-content: center; margin: 20px 0; }
+        .arrow-group { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
+        .arrow-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-light); }
+        .arrow-item .arrow { color: var(--green); font-weight: 600; }
+
+        /* Detail Panel */
+        .detail-panel { background: #fff; border: 1px solid var(--rule-dark); border-radius: 8px; padding: 24px; margin-top: 24px; display: none; }
+        .detail-panel.visible { display: block; }
+        .detail-panel-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px; }
+        .detail-panel-title { font-size: 18px; font-weight: 600; }
+        .detail-panel-close { font-size: 24px; cursor: pointer; color: var(--ink-faint); line-height: 1; }
+        .detail-panel-close:hover { color: var(--ink); }
+        .detail-panel-metric { font-size: 14px; color: var(--ink-light); margin-bottom: 12px; }
+        .detail-panel-trend { font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+<div class="outer">
+    <!-- Before/After Tabs -->
+    <div style="display: flex; gap: 0; border-bottom: 2px solid var(--rule-dark); margin: 32px 0 24px; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <button class="timeline-tab active" onclick="showTimeline('before')" style="flex: 1; padding: 12px 24px; background: none; border: none; border-bottom: 3px solid #dc2626; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--ink); font-family: inherit; margin-bottom: -2px;">
+            Before (2023-2024)
+        </button>
+        <button class="timeline-tab" onclick="showTimeline('after')" style="flex: 1; padding: 12px 24px; background: none; border: none; border-bottom: 3px solid transparent; font-size: 14px; font-weight: 500; cursor: pointer; color: var(--ink-light); font-family: inherit; margin-bottom: -2px;">
+            After (2025-2026)
+        </button>
+    </div>
+
+    <!-- BEFORE DIAGRAM -->
+    <div class="diagram-container before-diagram" id="timeline-before">
+        <div class="diagram-header">
+            <h2>Before Claude Code (Mid-2024)</h2>
+            <div class="period-label">Autocomplete and chat assistants worked, but not autonomous agents</div>
+        </div>
+
+        <div class="diagram-flow">
+            <div class="layer-col l1">
+                <div class="layer-col-label"><span class="dot"></span> Layer 0: Technical</div>
+                <div class="node-stack">
+                    <div class="node-pill">Hardware<br><span style="font-size: 9px;">$3/M tokens</span></div>
+                    <div class="node-pill small-text">Algorithmic Efficiency</div>
+                    <div class="node-pill">Architecture<br><span style="font-size: 9px;">200K context</span></div>
+                </div>
+            </div>
+
+            <div class="layer-col l2">
+                <div class="layer-col-label"><span class="dot"></span> Layer 1: Capabilities</div>
+                <div class="node-stack">
+                    <div class="node-pill capability">Reasoning<br><span style="font-size: 9px;">50-80 decisions</span></div>
+                    <div class="node-pill capability">Working Memory<br><span style="font-size: 9px;">200K tokens</span></div>
+                    <div class="node-pill capability">Time on Task<br><span style="font-size: 9px;">30+ minutes</span></div>
+                    <div class="node-pill capability">Cost<br><span style="font-size: 9px;">$3/M</span></div>
+                    <div class="node-pill barrier">Hallucination</div>
+                    <div class="node-pill barrier">Calibration</div>
+                    <div class="node-pill barrier">Taste</div>
+                    <div class="node-pill barrier">Effort</div>
+                </div>
+            </div>
+
+            <div class="layer-col l3">
+                <div class="layer-col-label"><span class="dot"></span> Layer 2: Barriers & Enablers</div>
+                <div class="node-stack">
+                    <div class="node-pill small-text">Context Access</div>
+                    <div class="node-pill small-text">Security</div>
+                    <div class="node-pill small-text">Change Mgmt</div>
+                    <div class="node-pill enabler small-text">RAG</div>
+                    <div class="node-pill enabler small-text">Tool Use</div>
+                    <div class="node-pill enabler small-text">Multi-Agent</div>
+                    <div class="node-pill enabler small-text">Human-in-the-Loop</div>
+                    <div class="node-pill enabler small-text">Integrations</div>
+                </div>
+            </div>
+
+            <div class="layer-col l4">
+                <div class="layer-col-label"><span class="dot"></span> Layer 3: Deployment</div>
+                <div class="node-stack">
+                    <div class="node-pill viable">Autocomplete<br>(Copilot)</div>
+                    <div class="node-pill viable">Chat Assistant<br>(Cursor Chat)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail panel for Before diagram -->
+        <div class="detail-panel" id="detail-panel-before">
+            <div class="detail-panel-header">
+                <div class="detail-panel-title" id="dp-title-before"></div>
+                <div class="detail-panel-close" id="dp-close-before">&times;</div>
+            </div>
+            <div class="detail-panel-metric" id="dp-metric-before"></div>
+            <div class="detail-panel-trend" id="dp-trend-before"></div>
+        </div>
+    </div>
+
+    <!-- AFTER DIAGRAM -->
+    <div class="diagram-container after-diagram" id="timeline-after" style="display: none;">
+        <div class="diagram-header">
+            <h2>What Enabled Claude Code (2025-2026)</h2>
+            <div class="period-label">Extended reasoning and tool use crossed viability thresholds</div>
+        </div>
+
+        <div class="diagram-flow">
+            <div class="layer-col l1">
+                <div class="layer-col-label"><span class="dot"></span> Layer 0: Technical</div>
+                <div class="node-stack">
+                    <div class="node-pill">Hardware<br><span style="font-size: 9px;">$0.40/M tokens</span></div>
+                    <div class="node-pill small-text">Algorithmic Efficiency</div>
+                    <div class="node-pill">Architecture<br><span style="font-size: 9px;">Extended CoT</span></div>
+                </div>
+            </div>
+
+            <div class="layer-col l2">
+                <div class="layer-col-label"><span class="dot"></span> Layer 1: Capabilities</div>
+                <div class="node-stack">
+                    <div class="node-pill capability crossed">Reasoning<br><span style="font-size: 9px;">Autonomous planning</span></div>
+                    <div class="node-pill capability crossed">Working Memory<br><span style="font-size: 9px;">Full codebase</span></div>
+                    <div class="node-pill capability crossed">Time on Task<br><span style="font-size: 9px;">Multi-hour</span></div>
+                    <div class="node-pill barrier">Calibration</div>
+                    <div class="node-pill barrier">Effort</div>
+                </div>
+            </div>
+
+            <div class="layer-col l3">
+                <div class="layer-col-label"><span class="dot"></span> Layer 2: Barriers & Enablers</div>
+                <div class="node-stack">
+                    <div class="node-pill not-relevant small-text">Context Access</div>
+                    <div class="node-pill enabler highlighted small-text">Tool Use</div>
+                    <div class="node-pill enabler highlighted small-text">Multi-Agent</div>
+                </div>
+            </div>
+
+            <div class="layer-col l4">
+                <div class="layer-col-label"><span class="dot"></span> Layer 3: Deployment</div>
+                <div class="node-stack">
+                    <div class="node-pill">Autocomplete<br>(Copilot)</div>
+                    <div class="node-pill">Chat Assistant<br>(Cursor Chat)</div>
+                    <div class="node-pill claude-code">Claude Code<br>(CLI Agent)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail panel for After diagram -->
+        <div class="detail-panel" id="detail-panel-after">
+            <div class="detail-panel-header">
+                <div class="detail-panel-title" id="dp-title-after"></div>
+                <div class="detail-panel-close" id="dp-close-after">&times;</div>
+            </div>
+            <div class="detail-panel-metric" id="dp-metric-after"></div>
+            <div class="detail-panel-trend" id="dp-trend-after"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const explanationsBefore = {
+    // Layer 0 - Technical (Mid-2024 state)
+    'hardware': {
+        title: 'Hardware',
+        metric: '$3/M tokens',
+        trend: 'Costs had dropped significantly from 2023 ($60/M) but were still high enough to limit extended autonomous sessions. A 2-hour coding session with full codebase in context could cost dollars.'
+    },
+    'algorithms': {
+        title: 'Algorithmic Efficiency',
+        metric: 'Steady improvements',
+        trend: 'Algorithmic efficiency continued improving, contributing to cost reductions. But not yet cheap enough for multi-hour autonomous agent sessions to be economically viable for individual developers.'
+    },
+    'architecture': {
+        title: 'Architecture',
+        metric: '200K context window',
+        trend: 'Context windows had grown to 200K tokens - enough for conversation history and some files. But reasoning was still limited - could handle single files or simple multi-file edits, not complex coordinated changes across entire features.'
+    },
+
+    // Layer 1 - Capabilities (Mid-2024 state)
+    'reasoning': {
+        title: 'Reasoning',
+        metric: 'Multi-file edits (human-guided)',
+        trend: 'Could make coordinated changes across multiple files when human provided clear instructions. But struggled with autonomous task breakdown - needed developer to specify which files to change and how they connect. Couldn\'t independently plan "add authentication" from scratch.'
+    },
+    'working-memory': {
+        title: 'Working Memory',
+        metric: '200K tokens',
+        trend: 'Could hold conversation plus a few files. Not enough for full codebase (hundreds of files), all dependencies, test suite, documentation, and current task context simultaneously. Had to swap files in and out of context.'
+    },
+    'time-on-task': {
+        title: 'Time on Task',
+        metric: 'Single attempt',
+        trend: 'Could make changes once, but couldn\'t autonomously iterate for hours. Developer had to manually run tests, read errors, ask AI to fix, repeat. AI couldn\'t sustain focus through full test-debug-fix-retest cycles without human in the loop.'
+    },
+    'calibration': {
+        title: 'Calibration',
+        metric: 'Can\'t assess task complexity',
+        trend: 'Couldn\'t tell "this bug is outside my expertise" or "this change affects 6 files I don\'t have context for." Required human to scope tasks appropriately and provide missing context.'
+    },
+    'effort': {
+        title: 'Effort',
+        metric: 'Takes shortcuts',
+        trend: 'Would skip edge cases, minimal error handling, basic implementations. Developers had to review carefully and add the missing polish.'
+    },
+
+    // Layer 2 - Barriers & Enablers (Mid-2024 state)
+    'context-access': {
+        title: 'Context Access',
+        metric: 'Limited to git repo',
+        trend: 'Could only see files in the repository. Couldn\'t access internal wikis, Slack discussions, design docs, production logs, or organizational context about why code is structured certain ways.'
+    },
+    'tool-use': {
+        title: 'Tool Use',
+        metric: 'Basic tool calling worked',
+        trend: 'Could call functions to read files, search code, run simple commands. But complex tool orchestration (run tests, parse errors, identify files to fix, make changes, re-run) was unreliable.'
+    },
+    'multi-agent': {
+        title: 'Multi-Agent',
+        metric: 'Early experiments',
+        trend: 'Multi-agent patterns (planner + coder + reviewer) were being explored but not production-ready. Coordination overhead and cost made them impractical for most use cases.'
+    },
+
+    // Layer 3 - Deployment (Mid-2024 state)
+    'autocomplete': {
+        title: 'Autocomplete (GitHub Copilot)',
+        metric: 'Widely used in 2024',
+        trend: 'Complete the next line or function. Very effective for speeding up coding. Developer writes structure and context, AI fills in implementation details. Fast, cheap, reliable.'
+    },
+    'chat-assistant': {
+        title: 'Chat Assistant (Cursor Chat)',
+        metric: 'Widely used in 2024',
+        trend: 'Developer asks questions, AI suggests code changes. Human reviews and applies edits. Conversational interface makes it easy to iterate. But developer still drives - AI assists rather than acts autonomously.'
+    }
+};
+
+const explanationsAfter = {
+    // Layer 0 - Technical (2025-2026 state)
+    'hardware': {
+        title: 'Hardware',
+        metric: '$0.40/M tokens (7.5x cheaper)',
+        trend: 'Costs dropped another 7.5x from mid-2024. Made multi-hour autonomous coding sessions economically viable. A 3-hour session costs cents instead of dollars. Individual developers can afford extended AI agent usage.'
+    },
+    'algorithms': {
+        title: 'Algorithmic Efficiency',
+        metric: 'Continued exponential improvement',
+        trend: 'Algorithmic efficiency gains contributed to cost reduction and made extended reasoning viable. More efficient inference enabled longer autonomous sessions.'
+    },
+    'architecture': {
+        title: 'Architecture',
+        metric: 'Extended chain-of-thought reasoning',
+        trend: 'Extended CoT and improved reasoning architectures enabled handling complex multi-file changes. Can now plan feature implementation across 6+ files, coordinate database schema with API endpoints with frontend components.'
+    },
+
+    // Layer 1 - Capabilities (2025-2026 state)
+    'reasoning': {
+        title: 'Reasoning',
+        metric: 'Autonomous task planning and breakdown',
+        trend: 'Can now independently plan "add authentication" from scratch: identify which files to change, understand dependencies, coordinate changes across API/database/frontend. This threshold crossing was CRITICAL for Claude Code - autonomous agents need to break down high-level tasks without human guidance at each step.'
+    },
+    'working-memory': {
+        title: 'Working Memory',
+        metric: 'Full codebase in context',
+        trend: 'Can hold entire medium-sized codebase, all config files, test suite, previous conversation, and current task context simultaneously. This threshold crossing was CRITICAL for Claude Code - agents need full system context to make coordinated changes safely.'
+    },
+    'time-on-task': {
+        title: 'Time on Task',
+        metric: 'Multi-hour autonomous sessions',
+        trend: 'Can work for hours: make changes, run tests, read errors, debug, fix, re-run until passing. This threshold crossing was CRITICAL for Claude Code - agents need sustained focus to iterate until tasks are complete, not just make one attempt.'
+    },
+    'calibration': {
+        title: 'Calibration',
+        metric: 'Still can\'t assess complexity well',
+        trend: 'Still can\'t reliably say "this task is beyond me" or "I need more context." This BLOCKS full autonomy - developers still need to scope tasks appropriately and provide necessary context upfront.'
+    },
+    'effort': {
+        title: 'Effort',
+        metric: 'Still takes shortcuts',
+        trend: 'Still does minimum viable work. Skips comprehensive error handling, edge cases, performance optimization. This BLOCKS production-ready output - developers need to review and add polish, but the agent accelerates the core implementation.'
+    },
+
+    // Layer 2 - Barriers & Enablers (2025-2026 state)
+    'context-access': {
+        title: 'Context Access',
+        metric: 'Still limited to git repo',
+        trend: 'Still can\'t access wikis, Slack, design docs, production logs. This barrier remains but doesn\'t prevent Claude Code from working - it\'s useful for well-scoped tasks within the codebase even without full organizational context.'
+    },
+    'tool-use': {
+        title: 'Tool Use',
+        metric: 'DIRECTLY ENABLED Claude Code',
+        trend: 'Reliable tool orchestration became viable. Can now dependably: read files, search codebase, run tests, parse errors, identify files to fix, make edits, commit changes. This enabler was CRITICAL for Claude Code - autonomous agents need to interact with development environment, not just generate code.'
+    },
+    'multi-agent': {
+        title: 'Multi-Agent',
+        metric: 'DIRECTLY ENABLED Claude Code',
+        trend: 'Multi-agent patterns became production-ready. Claude Code uses specialized sub-agents: explorer for codebase search, planner for implementation strategy, reviewer for code quality. This enabler was CRITICAL for Claude Code - complex tasks benefit from specialized agents with different tools and expertise.'
+    },
+
+    // Layer 3 - Deployment (2025-2026 state)
+    'autocomplete': {
+        title: 'Autocomplete (GitHub Copilot)',
+        metric: 'Still widely used',
+        trend: 'Autocomplete remains valuable for quick line/function completion. Faster and cheaper than agents for simple cases. Different use case than autonomous agents - complementary tools.'
+    },
+    'chat-assistant': {
+        title: 'Chat Assistant (Cursor Chat)',
+        metric: 'Still widely used',
+        trend: 'Chat assistants remain useful for quick questions and suggestions. Developer stays in control. Different interaction model than autonomous agents - both have their place in the workflow.'
+    },
+    'claude-code': {
+        title: 'Claude Code (CLI Agent)',
+        metric: 'Enabled by 3 simultaneous threshold crossings',
+        trend: 'Claude Code became viable when Reasoning (multi-file coordination), Working Memory (full codebase), and Time on Task (multi-hour sessions) all crossed thresholds in 2025-2026, plus Tool Use and Multi-Agent patterns matured. Developer describes task ("add authentication"), agent reads codebase, makes coordinated changes, runs tests, debugs, iterates until passing.'
+    }
+};
+
+function showExplanation(key, element, panelId) {
+    const panel = document.getElementById(panelId);
+    const isBefore = panelId.includes('before');
+    const explanations = isBefore ? explanationsBefore : explanationsAfter;
+    const explanation = explanations[key];
+
+    // Remove active class from all pills
+    document.querySelectorAll('.node-pill').forEach(pill => pill.classList.remove('active'));
+
+    // Hide both panels
+    document.getElementById('detail-panel-before').classList.remove('visible');
+    document.getElementById('detail-panel-after').classList.remove('visible');
+
+    // Add active class to clicked pill
+    if (element) element.classList.add('active');
+
+    if (explanation) {
+        const suffix = isBefore ? '-before' : '-after';
+        document.getElementById('dp-title' + suffix).textContent = explanation.title;
+        document.getElementById('dp-metric' + suffix).textContent = explanation.metric;
+        document.getElementById('dp-trend' + suffix).textContent = explanation.trend;
+        panel.classList.add('visible');
+    }
+}
+
+function closePanel(panelId) {
+    document.getElementById(panelId).classList.remove('visible');
+    document.querySelectorAll('.node-pill').forEach(pill => pill.classList.remove('active'));
+}
+
+// Close button handlers
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dp-close-before').addEventListener('click', () => closePanel('detail-panel-before'));
+    document.getElementById('dp-close-after').addEventListener('click', () => closePanel('detail-panel-after'));
+});
+
+// Add click handlers to all node pills
+document.addEventListener('DOMContentLoaded', () => {
+    // Layer 0 - Before diagram
+    document.querySelector('.before-diagram .l1').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['hardware', 'algorithms', 'architecture'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 0 - After diagram
+    document.querySelector('.after-diagram .l1').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['hardware', 'algorithms', 'architecture'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 1 - Before diagram
+    document.querySelector('.before-diagram .l2').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['reasoning', 'working-memory', 'time-on-task', 'calibration', 'effort'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 1 - After diagram
+    document.querySelector('.after-diagram .l2').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['reasoning', 'working-memory', 'time-on-task', 'calibration', 'effort'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 2 - Before diagram
+    document.querySelector('.before-diagram .l3').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['context-access', 'tool-use', 'multi-agent'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 2 - After diagram
+    document.querySelector('.after-diagram .l3').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['context-access', 'tool-use', 'multi-agent'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 3 - Before diagram
+    document.querySelector('.before-diagram .l4').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['autocomplete', 'chat-assistant'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 3 - After diagram
+    document.querySelector('.after-diagram .l4').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['autocomplete', 'chat-assistant', 'claude-code'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+});
+
+function showTimeline(period) {
+    if (period === 'before') {
+        document.getElementById('timeline-before').style.display = 'block';
+        document.getElementById('timeline-after').style.display = 'none';
+    } else {
+        document.getElementById('timeline-before').style.display = 'none';
+        document.getElementById('timeline-after').style.display = 'block';
+    }
+
+    // Update tab styles
+    document.querySelectorAll('.timeline-tab').forEach(tab => {
+        tab.style.borderBottomColor = 'transparent';
+        tab.style.fontWeight = '500';
+        tab.style.color = 'var(--ink-light)';
+    });
+
+    event.target.style.borderBottomColor = period === 'before' ? '#dc2626' : '#15803d';
+    event.target.style.fontWeight = '600';
+    event.target.style.color = 'var(--ink)';
+}
+</script>
+
+</body>
+</html>

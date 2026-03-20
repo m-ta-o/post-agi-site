@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Made AI Customer Support Possible</title>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --paper: #fdfcfa;
+            --ink: #1a1a1a; --ink-light: #6b7280; --ink-faint: #9ca3af;
+            --rule: #e5e5e5; --rule-dark: #d4d4d4;
+            --green: #15803d;
+            --l1: #2563eb; --l1-bg: rgba(37,99,235,0.04); --l1-border: rgba(37,99,235,0.15);
+            --l2: #15803d; --l2-bg: rgba(21,128,61,0.04); --l2-border: rgba(21,128,61,0.15);
+            --l3: #b91c1c; --l3-bg: rgba(185,28,28,0.04); --l3-border: rgba(185,28,28,0.15);
+            --l4: #ca8a04; --l4-bg: rgba(202,138,4,0.04); --l4-border: rgba(202,138,4,0.15);
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--paper); color: var(--ink);
+            line-height: 1.7; font-size: 17px;
+            padding: 60px 24px;
+        }
+        .outer { max-width: 1200px; margin: 0 auto; }
+        h1 { font-family: 'Newsreader', Georgia, serif; font-size: 32px; font-weight: 400; text-align: center; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: var(--ink-light); font-size: 15px; margin-bottom: 40px; }
+
+        /* Diagram containers */
+        .diagram-wrap { position: relative; margin: 40px 0; }
+        .diagram-instruction { font-size: 13px; color: var(--ink-faint); text-align: center; margin-bottom: 16px; }
+        .diagram-container { margin-bottom: 60px; }
+        .diagram-header { text-align: center; margin-bottom: 16px; }
+        .diagram-header h2 { font-family: 'Newsreader', Georgia, serif; font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+        .diagram-header .period-label { font-size: 13px; color: var(--ink-faint); }
+
+        .diagram-flow { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0; position: relative; }
+        .layer-col { padding: 20px 12px; position: relative; display: flex; flex-direction: column; min-height: 400px; }
+        .layer-col.l1 { background: var(--l1-bg); border: 1px solid var(--l1-border); border-radius: 8px 0 0 8px; border-right: none; }
+        .layer-col.l2 { background: var(--l2-bg); border: 1px solid var(--l2-border); border-left: none; border-right: none; }
+        .layer-col.l3 { background: var(--l3-bg); border: 1px solid var(--l3-border); border-left: none; border-right: none; }
+        .layer-col.l4 { background: var(--l4-bg); border: 1px solid var(--l4-border); border-radius: 0 8px 8px 0; border-left: none; }
+
+        .layer-col-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+        .layer-col-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .l1 .layer-col-label { color: var(--l1); }
+        .l1 .layer-col-label .dot { background: var(--l1); }
+        .l2 .layer-col-label { color: var(--l2); }
+        .l2 .layer-col-label .dot { background: var(--l2); }
+        .l3 .layer-col-label { color: var(--l3); }
+        .l3 .layer-col-label .dot { background: var(--l3); }
+        .l4 .layer-col-label { color: var(--l4); }
+        .l4 .layer-col-label .dot { background: var(--l4); }
+
+        .node-stack { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: space-around; }
+
+        .node-pill { font-size: 11px; font-weight: 500; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; user-select: none; position: relative; z-index: 2; line-height: 1.3; }
+        .node-pill:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .node-pill.active { box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+
+        /* Layer 0 pills */
+        .l1 .node-pill { background: #fff; border-color: var(--l1-border); color: var(--ink); }
+        .l1 .node-pill.active { background: var(--l1); color: #fff; border-color: var(--l1); }
+
+        /* Layer 1 pills (capabilities + quality issues) */
+        .l2 .node-pill { background: #fff; border-color: var(--l2-border); color: var(--ink); }
+        .l2 .node-pill.active { background: var(--l2); color: #fff; border-color: var(--l2); }
+        .l2 .node-pill.barrier { border-style: dashed; color: #b91c1c; }
+        .l2 .node-pill.barrier.active { background: #b91c1c; color: #fff; border-color: #b91c1c; }
+
+        /* Layer 2 pills (org barriers + enablers) */
+        .l3 .node-pill { background: #fff; border-color: var(--l3-border); color: #b91c1c; border-style: dashed; }
+        .l3 .node-pill.active { background: var(--l3); color: #fff; border-color: var(--l3); }
+        .l3 .node-pill.enabler { border-style: solid; color: var(--green); border-color: var(--l2-border); }
+        .l3 .node-pill.enabler.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+        /* Layer 3 pills */
+        .l4 .node-pill { background: #fff; border-color: var(--l4-border); color: var(--ink); }
+        .l4 .node-pill.active { background: var(--l4); color: #fff; border-color: var(--l4); }
+
+        /* Before/After specific styling */
+        .before-diagram .l2 .node-pill.capability {
+            background: #fecaca;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+        .before-diagram .l3 .node-pill { opacity: 0.4; }
+        .before-diagram .l4 .node-pill:not(.viable) { opacity: 0.4; }
+
+        .after-diagram .l2 .node-pill.capability.crossed {
+            background: #dcfce7;
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .after-diagram .l3 .node-pill.enabler.highlighted {
+            background: #dcfce7;
+        }
+        .after-diagram .l3 .node-pill.not-relevant {
+            opacity: 0.3;
+        }
+        .after-diagram .l4 .node-pill.customer-support {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: 2px solid #1d4ed8;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Comparison arrows */
+        .comparison-arrows { position: relative; height: 40px; display: flex; align-items: center; justify-content: center; margin: 20px 0; }
+        .arrow-group { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
+        .arrow-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-light); }
+        .arrow-item .arrow { color: var(--green); font-weight: 600; }
+
+        /* Detail Panel */
+        .detail-panel { background: #fff; border: 1px solid var(--rule-dark); border-radius: 8px; padding: 24px; margin-top: 24px; display: none; }
+        .detail-panel.visible { display: block; }
+        .detail-panel-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px; }
+        .detail-panel-title { font-size: 18px; font-weight: 600; }
+        .detail-panel-close { font-size: 24px; cursor: pointer; color: var(--ink-faint); line-height: 1; }
+        .detail-panel-close:hover { color: var(--ink); }
+        .detail-panel-metric { font-size: 14px; color: var(--ink-light); margin-bottom: 12px; }
+        .detail-panel-trend { font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+<div class="outer">
+    <!-- Before/After Tabs -->
+    <div style="display: flex; gap: 0; border-bottom: 2px solid var(--rule-dark); margin: 32px 0 24px; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <button class="timeline-tab active" onclick="showTimeline('before')" style="flex: 1; padding: 12px 24px; background: none; border: none; border-bottom: 3px solid #dc2626; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--ink); font-family: inherit; margin-bottom: -2px;">
+            Before (Early 2023)
+        </button>
+        <button class="timeline-tab" onclick="showTimeline('after')" style="flex: 1; padding: 12px 24px; background: none; border: none; border-bottom: 3px solid transparent; font-size: 14px; font-weight: 500; cursor: pointer; color: var(--ink-light); font-family: inherit; margin-bottom: -2px;">
+            After (Mid-2024)
+        </button>
+    </div>
+
+    <!-- BEFORE DIAGRAM -->
+    <div class="diagram-container before-diagram" id="timeline-before">
+        <div class="diagram-header">
+            <h2>Before AI Customer Support (Early 2023)</h2>
+            <div class="period-label">Capabilities below viability threshold</div>
+        </div>
+
+        <div class="diagram-flow">
+            <div class="layer-col l1">
+                <div class="layer-col-label"><span class="dot"></span> Layer 0: Technical</div>
+                <div class="node-stack">
+                    <div class="node-pill">Hardware<br><span style="font-size: 9px;">$60/M tokens</span></div>
+                    <div class="node-pill small-text">Algorithmic Efficiency</div>
+                    <div class="node-pill">Architecture<br><span style="font-size: 9px;">4K context</span></div>
+                </div>
+            </div>
+
+            <div class="layer-col l2">
+                <div class="layer-col-label"><span class="dot"></span> Layer 1: Capabilities</div>
+                <div class="node-stack">
+                    <div class="node-pill capability">Reasoning<br><span style="font-size: 9px;">Simple queries</span></div>
+                    <div class="node-pill capability">Working Memory<br><span style="font-size: 9px;">4K tokens</span></div>
+                    <div class="node-pill capability">Cost<br><span style="font-size: 9px;">$60/M</span></div>
+                    <div class="node-pill barrier">Hallucination</div>
+                    <div class="node-pill barrier">Calibration</div>
+                </div>
+            </div>
+
+            <div class="layer-col l3">
+                <div class="layer-col-label"><span class="dot"></span> Layer 2: Barriers & Enablers</div>
+                <div class="node-stack">
+                    <div class="node-pill small-text">Context Access</div>
+                    <div class="node-pill small-text">Security</div>
+                    <div class="node-pill small-text">Change Mgmt</div>
+                    <div class="node-pill enabler small-text">RAG</div>
+                    <div class="node-pill enabler small-text">Tool Use</div>
+                    <div class="node-pill enabler small-text">Integrations</div>
+                </div>
+            </div>
+
+            <div class="layer-col l4">
+                <div class="layer-col-label"><span class="dot"></span> Layer 3: Deployment</div>
+                <div class="node-stack">
+                    <div class="node-pill viable">Rule-Based<br>Chatbots</div>
+                    <div class="node-pill viable">FAQ Matching</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail panel for Before diagram -->
+        <div class="detail-panel" id="detail-panel-before">
+            <div class="detail-panel-header">
+                <div class="detail-panel-title" id="dp-title-before"></div>
+                <div class="detail-panel-close" id="dp-close-before">&times;</div>
+            </div>
+            <div class="detail-panel-metric" id="dp-metric-before"></div>
+            <div class="detail-panel-trend" id="dp-trend-before"></div>
+        </div>
+    </div>
+
+    <!-- COMPARISON ARROWS -->
+
+    <!-- AFTER DIAGRAM -->
+    <div class="diagram-container after-diagram" id="timeline-after" style="display: none;">
+        <div class="diagram-header">
+            <h2>What Enabled AI Customer Support (Mid-2024)</h2>
+            <div class="period-label">Key capabilities crossed viability thresholds</div>
+        </div>
+
+        <div class="diagram-flow">
+            <div class="layer-col l1">
+                <div class="layer-col-label"><span class="dot"></span> Layer 0: Technical</div>
+                <div class="node-stack">
+                    <div class="node-pill">Hardware<br><span style="font-size: 9px;">$0.40/M tokens</span></div>
+                    <div class="node-pill small-text">Algorithmic Efficiency</div>
+                    <div class="node-pill">Architecture<br><span style="font-size: 9px;">200K context</span></div>
+                </div>
+            </div>
+
+            <div class="layer-col l2">
+                <div class="layer-col-label"><span class="dot"></span> Layer 1: Capabilities</div>
+                <div class="node-stack">
+                    <div class="node-pill capability crossed">Reasoning<br><span style="font-size: 9px;">Multi-step support</span></div>
+                    <div class="node-pill capability crossed">Working Memory<br><span style="font-size: 9px;">200K tokens</span></div>
+                    <div class="node-pill capability crossed">Cost<br><span style="font-size: 9px;">$0.40/M (150x)</span></div>
+                    <div class="node-pill barrier">Hallucination</div>
+                    <div class="node-pill barrier">Calibration</div>
+                </div>
+            </div>
+
+            <div class="layer-col l3">
+                <div class="layer-col-label"><span class="dot"></span> Layer 2: Barriers & Enablers</div>
+                <div class="node-stack">
+                    <div class="node-pill not-relevant small-text">Context Access</div>
+                    <div class="node-pill not-relevant small-text">Security</div>
+                    <div class="node-pill not-relevant small-text">Change Mgmt</div>
+                    <div class="node-pill enabler highlighted small-text">RAG</div>
+                    <div class="node-pill enabler highlighted small-text">Tool Use</div>
+                    <div class="node-pill enabler highlighted small-text">Integrations</div>
+                </div>
+            </div>
+
+            <div class="layer-col l4">
+                <div class="layer-col-label"><span class="dot"></span> Layer 3: Deployment</div>
+                <div class="node-stack">
+                    <div class="node-pill">Rule-Based<br>Chatbots</div>
+                    <div class="node-pill">FAQ Matching</div>
+                    <div class="node-pill customer-support">AI Customer<br>Support</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail panel for After diagram -->
+        <div class="detail-panel" id="detail-panel-after">
+            <div class="detail-panel-header">
+                <div class="detail-panel-title" id="dp-title-after"></div>
+                <div class="detail-panel-close" id="dp-close-after">&times;</div>
+            </div>
+            <div class="detail-panel-metric" id="dp-metric-after"></div>
+            <div class="detail-panel-trend" id="dp-trend-after"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const explanationsBefore = {
+    // Layer 0 - Technical (2023 state)
+    'hardware': {
+        title: 'Hardware',
+        metric: '$60/M tokens',
+        trend: 'Running millions of customer conversations would cost tens of thousands of dollars monthly. Too expensive for most companies to deploy at scale. Limited to high-value enterprise customers only.'
+    },
+    'algorithms': {
+        title: 'Algorithmic Efficiency',
+        metric: 'Training and inference was expensive',
+        trend: 'High computational costs meant only large companies could afford to experiment. Made real-time customer support chatbots economically challenging.'
+    },
+    'architecture': {
+        title: 'Architecture',
+        metric: '4K context window',
+        trend: 'Could only hold short conversation history. Couldn\'t access knowledge base articles while maintaining conversation context. Tool calling was unreliable - only ~47% accuracy.'
+    },
+
+    // Layer 1 - Capabilities (2023 state)
+    'reasoning': {
+        title: 'Reasoning',
+        metric: 'Simple queries only',
+        trend: 'Could answer basic questions from training data. Struggled with multi-step support issues requiring multiple lookups, policy checks, and account updates.'
+    },
+    'working-memory': {
+        title: 'Working Memory',
+        metric: '4K tokens',
+        trend: 'Lost earlier conversation context quickly. Couldn\'t hold conversation history plus retrieved knowledge base articles plus customer account details simultaneously.'
+    },
+    'cost': {
+        title: 'Cost',
+        metric: '$60/M tokens',
+        trend: 'A company handling 10,000 conversations daily would spend thousands per month just on API costs. Made it economically viable only for high-touch enterprise support.'
+    },
+    'hallucination': {
+        title: 'Hallucination',
+        metric: 'Makes up facts, policies, account details',
+        trend: 'Models invented shipping policies, made up account balances, fabricated refund procedures. In customer support, hallucinations damage trust and create liability. Required heavy human oversight.'
+    },
+    'calibration': {
+        title: 'Calibration',
+        metric: 'Can\'t tell when to escalate',
+        trend: 'Couldn\'t recognize when a question was outside its knowledge or required human judgment. Attempted to answer everything with equal confidence, even when wrong.'
+    },
+
+    // Layer 2 - Barriers & Enablers (2023 state)
+    'context-access': {
+        title: 'Context Access',
+        metric: 'Can\'t access ticketing systems, CRM, order history',
+        trend: 'Models couldn\'t see customer account details, order history, previous tickets, or internal documentation. Only had access to training data.'
+    },
+    'security': {
+        title: 'Security',
+        metric: 'Customer data privacy concerns',
+        trend: 'Sending customer PII to third-party APIs raised compliance and security concerns. Required careful data handling and restricted what information could be shared with the model.'
+    },
+    'change-mgmt': {
+        title: 'Change Management',
+        metric: 'Support teams resistant to AI',
+        trend: 'Customer support teams worried about job security. Organizations needed change management to get adoption. Required retraining support staff for AI-augmented workflows.'
+    },
+    'rag': {
+        title: 'RAG',
+        metric: 'Not viable in 2023',
+        trend: 'Small 4K context windows made RAG impractical - couldn\'t fit retrieved knowledge base articles plus conversation history. Retrieving relevant docs was unreliable.'
+    },
+    'tool-use': {
+        title: 'Tool Use',
+        metric: 'Unreliable - ~47% accuracy',
+        trend: 'Function calling was too inconsistent for production. Would call the wrong API, pass malformed parameters, or fail to call tools when needed. Too risky for customer-facing operations.'
+    },
+    'integrations': {
+        title: 'Integrations',
+        metric: 'Limited value in 2023',
+        trend: 'Not worth integrating deeply when models couldn\'t reliably use the tools or hold enough context to be useful. Basic API access was sufficient for experiments.'
+    },
+
+    // Layer 3 - Deployment (2023 state)
+    'rule-based': {
+        title: 'Rule-Based Chatbots',
+        metric: 'Decision trees, if/then logic',
+        trend: 'Chatbots followed predefined scripts and decision trees. Could handle simple, predictable flows like "track my order" or "reset password" but broke on anything outside the script.'
+    },
+    'faq-matching': {
+        title: 'FAQ Matching',
+        metric: 'Keyword search of help docs',
+        trend: 'Search help articles for keywords from customer questions. Return relevant FAQ links. Required customers to read articles themselves - didn\'t actually answer questions.'
+    }
+};
+
+const explanationsAfter = {
+    // Layer 0 - Technical (2024 state)
+    'hardware': {
+        title: 'Hardware',
+        metric: '$0.40/M tokens (150x cheaper)',
+        trend: 'Cost dropped 150x from 2023 to 2024. Made running millions of customer conversations economically viable. A company handling 10,000 daily conversations now spends hundreds instead of thousands monthly.'
+    },
+    'algorithms': {
+        title: 'Algorithmic Efficiency',
+        metric: '280x cheaper to train equivalent models',
+        trend: 'Algorithmic improvements contributed to massive cost reduction. Made real-time customer support chatbots practical for companies of all sizes.'
+    },
+    'architecture': {
+        title: 'Architecture',
+        metric: '200K context (50x growth)',
+        trend: 'Context windows grew from 4K to 200K tokens. Can now hold full conversation history, multiple retrieved knowledge base articles, customer account details, and policy documents simultaneously. Tool calling improved to 90%+ accuracy.'
+    },
+
+    // Layer 1 - Capabilities (2024 state)
+    'reasoning': {
+        title: 'Reasoning',
+        metric: 'Multi-step support workflows',
+        trend: 'Can handle complex support issues requiring multiple steps: look up order, check refund policy, calculate refund amount, update ticket, send confirmation. This reasoning threshold crossing was CRITICAL for customer support.'
+    },
+    'working-memory': {
+        title: 'Working Memory',
+        metric: '200K tokens (50x growth)',
+        trend: 'Can hold entire conversation history, 10+ retrieved knowledge base articles, customer account data, and order details simultaneously. This threshold crossing was CRITICAL - support requires juggling conversation, customer data, and company policies all at once.'
+    },
+    'cost': {
+        title: 'Cost',
+        metric: '$0.40/M tokens (150x cheaper)',
+        trend: 'At 2024 prices, handling millions of customer conversations costs hundreds per month instead of thousands. This threshold crossing was CRITICAL - made AI support economically viable for small and mid-size companies, not just enterprises.'
+    },
+    'hallucination': {
+        title: 'Hallucination',
+        metric: 'Still makes up facts',
+        trend: 'Models still hallucinate policies and procedures. This BLOCKS full autonomy - customer support chatbots require RAG (ground answers in retrieved docs) and human escalation when confidence is low. Can\'t trust AI to make up answers.'
+    },
+    'calibration': {
+        title: 'Calibration',
+        metric: 'Still can\'t assess uncertainty well',
+        trend: 'Models struggle to know when to escalate to humans. This BLOCKS full autonomy - need explicit escalation rules ("if customer asks for refund over $X, escalate") rather than trusting AI judgment about difficulty.'
+    },
+
+    // Layer 2 - Barriers & Enablers (2024 state)
+    'context-access': {
+        title: 'Context Access',
+        metric: 'Still can\'t access all internal systems',
+        trend: 'Many companies have complex, legacy systems that are hard to integrate. This barrier remains but is addressable through integrations and tool use - companies can build API layers to give AI controlled access.'
+    },
+    'security': {
+        title: 'Security',
+        metric: 'Customer data privacy still a concern',
+        trend: 'Compliance teams still worry about sending PII to third-party APIs. This barrier remains but is addressable - companies can self-host models, use data redaction, or get SOC 2 certified AI vendors.'
+    },
+    'change-mgmt': {
+        title: 'Change Management',
+        metric: 'Still requires organizational effort',
+        trend: 'Support teams still need training on AI-augmented workflows. This barrier remains - not solved by better models, requires sustained organizational change management.'
+    },
+    'rag': {
+        title: 'RAG (Retrieval-Augmented Generation)',
+        metric: 'DIRECTLY ENABLED customer support',
+        trend: 'RAG became viable when context windows hit 200K tokens. Can now retrieve 10+ relevant knowledge base articles and fit them in context with the conversation. Reduces hallucination 15-82% by grounding answers in company docs. This enabler was CRITICAL for customer support - prevents making up policies.'
+    },
+    'tool-use': {
+        title: 'Tool Use',
+        metric: 'DIRECTLY ENABLED customer support',
+        trend: 'Tool calling accuracy jumped from ~47% to 90%+. AI can now reliably look up orders, check account status, create tickets, process refunds. This enabler was CRITICAL for customer support - need to access live customer data and take actions, not just chat.'
+    },
+    'integrations': {
+        title: 'Integrations',
+        metric: 'DIRECTLY ENABLED customer support',
+        trend: 'Now worth integrating AI with CRM (Salesforce, HubSpot), ticketing systems (Zendesk, Intercom), and order management systems. This enabler was CRITICAL for customer support - AI needs access to customer account data and internal systems to be useful.'
+    },
+
+    // Layer 3 - Deployment (2024 state)
+    'rule-based': {
+        title: 'Rule-Based Chatbots',
+        metric: 'Still used for simple flows',
+        trend: 'Rule-based bots still handle simple, predictable cases like password resets. Cheaper and more reliable than AI for trivial tasks that don\'t require understanding.'
+    },
+    'faq-matching': {
+        title: 'FAQ Matching',
+        metric: 'Still used as fallback',
+        trend: 'Keyword search still works as a fallback when AI escalates or for customers who prefer self-service articles over chatbots.'
+    },
+    'customer-support': {
+        title: 'AI Customer Support',
+        metric: 'Enabled by 3 simultaneous threshold crossings',
+        trend: 'AI customer support became viable when Working Memory (200K context), Cost (150x drop), and Tool Use (90%+ accuracy) all crossed thresholds in 2024, plus RAG and Integrations became practical. No single capability would have been enough - needed all three capabilities plus the Layer 2 enablers to work.'
+    }
+};
+
+function showExplanation(key, element, panelId) {
+    const panel = document.getElementById(panelId);
+    const isBefore = panelId.includes('before');
+    const explanations = isBefore ? explanationsBefore : explanationsAfter;
+    const explanation = explanations[key];
+
+    // Remove active class from all pills
+    document.querySelectorAll('.node-pill').forEach(pill => pill.classList.remove('active'));
+
+    // Hide both panels
+    document.getElementById('detail-panel-before').classList.remove('visible');
+    document.getElementById('detail-panel-after').classList.remove('visible');
+
+    // Add active class to clicked pill
+    if (element) element.classList.add('active');
+
+    if (explanation) {
+        const suffix = isBefore ? '-before' : '-after';
+        document.getElementById('dp-title' + suffix).textContent = explanation.title;
+        document.getElementById('dp-metric' + suffix).textContent = explanation.metric;
+        document.getElementById('dp-trend' + suffix).textContent = explanation.trend;
+        panel.classList.add('visible');
+    }
+}
+
+function closePanel(panelId) {
+    document.getElementById(panelId).classList.remove('visible');
+    document.querySelectorAll('.node-pill').forEach(pill => pill.classList.remove('active'));
+}
+
+// Close button handlers
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dp-close-before').addEventListener('click', () => closePanel('detail-panel-before'));
+    document.getElementById('dp-close-after').addEventListener('click', () => closePanel('detail-panel-after'));
+});
+
+// Add click handlers to all node pills
+document.addEventListener('DOMContentLoaded', () => {
+    // Layer 0 - Before diagram
+    document.querySelector('.before-diagram .l1').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['hardware', 'algorithms', 'architecture'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 0 - After diagram
+    document.querySelector('.after-diagram .l1').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['hardware', 'algorithms', 'architecture'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 1 - Before diagram
+    document.querySelector('.before-diagram .l2').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['reasoning', 'working-memory', 'cost', 'hallucination', 'calibration'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 1 - After diagram
+    document.querySelector('.after-diagram .l2').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['reasoning', 'working-memory', 'cost', 'hallucination', 'calibration'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 2 - Before diagram
+    document.querySelector('.before-diagram .l3').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['context-access', 'security', 'change-mgmt', 'rag', 'tool-use', 'integrations'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 2 - After diagram
+    document.querySelector('.after-diagram .l3').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['context-access', 'security', 'change-mgmt', 'rag', 'tool-use', 'integrations'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+
+    // Layer 3 - Before diagram
+    document.querySelector('.before-diagram .l4').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['rule-based', 'faq-matching'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-before');
+    });
+
+    // Layer 3 - After diagram
+    document.querySelector('.after-diagram .l4').querySelectorAll('.node-pill').forEach((pill, idx) => {
+        const keys = ['rule-based', 'faq-matching', 'customer-support'];
+        if (keys[idx]) pill.onclick = () => showExplanation(keys[idx], pill, 'detail-panel-after');
+    });
+});
+
+function showTimeline(period) {
+    if (period === 'before') {
+        document.getElementById('timeline-before').style.display = 'block';
+        document.getElementById('timeline-after').style.display = 'none';
+    } else {
+        document.getElementById('timeline-before').style.display = 'none';
+        document.getElementById('timeline-after').style.display = 'block';
+    }
+
+    // Update tab styles
+    document.querySelectorAll('.timeline-tab').forEach(tab => {
+        tab.style.borderBottomColor = 'transparent';
+        tab.style.fontWeight = '500';
+        tab.style.color = 'var(--ink-light)';
+    });
+
+    event.target.style.borderBottomColor = period === 'before' ? '#dc2626' : '#15803d';
+    event.target.style.fontWeight = '600';
+    event.target.style.color = 'var(--ink)';
+}
+</script>
+
+</body>
+</html>
