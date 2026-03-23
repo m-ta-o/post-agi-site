@@ -366,11 +366,23 @@
 
         <p>Most AI discourse focuses on Layer 0 (technical progress) or Layer 3 (what got deployed). The gap between them—Layers 1 and 2—explains why progress feels exponential and unpredictable.</p>
 
-        <p>Layer 1 capabilities don't improve smoothly. They cross discrete viability thresholds that suddenly make entire categories of work possible. Working memory going from 4K to 200K tokens wasn't a 50x improvement—it was the difference between "can't hold a conversation about a codebase" and "can".</p>
+        <p>Layer 1 capabilities don't improve smoothly. They cross discrete viability thresholds that suddenly make entire categories of work possible. Working memory going from 8K to 128K tokens wasn't just a 16x improvement—it was the difference between "can't hold a full codebase" and "can." Reasoning crossing ~80% on SWE-bench enabled multi-file coordination. Cost dropping below $2/M tokens made multi-agent workflows economically viable. Autonomy extending to 4+ hours enabled end-to-end task completion without human intervention.</p>
 
         <p>Layer 2 barriers and enablers determine what actually ships. Better models don't automatically solve organizational barriers like security, context access, or change management. But they do make product enablers viable—RAG became practical when context windows hit 200K, multi-agent coordination became economical when costs dropped 150x.</p>
 
         <p>Understanding these four layers helps predict what becomes possible next and why some capabilities translate to deployments faster than others.</p>
+
+        <h2>Limitations of This Framework</h2>
+
+        <p>This framework explains successful deployments where technical thresholds crossed and barriers were addressable. It doesn't explain everything.</p>
+
+        <p><strong>It doesn't explain deployment failures.</strong> 80% of enterprise AI projects fail to reach production despite technical viability. Klarna deployed AI customer service in February 2024 handling 2/3 of tickets, then reversed course in 2025 due to quality issues at scale. Organizational barriers (security, integration, change management) are often stronger than the framework suggests—they're not just "addressable," they're frequently insurmountable.</p>
+
+        <p><strong>Timing is fuzzier than it looks.</strong> The case studies present threshold crossings as "simultaneous," but that depends on your timescale. Claude 2 reached 100K context in July 2023, GPT-4 Turbo hit 128K in November 2023, but Lovable didn't launch until November 2024. On a yearly scale, capabilities converged "around 2024." On a monthly scale, they're spread across 16 months. The "simultaneity" is partly a framing artifact.</p>
+
+        <p><strong>Task design can bypass thresholds entirely.</strong> GitHub Copilot launched in 2021 with GPT-3 (4K context, $60/M tokens, limited reasoning) by narrowing the task to line/function autocomplete instead of multi-file reasoning. Some deployments work by choosing simpler tasks, not by waiting for capabilities to improve.</p>
+
+        <p><strong>This framework describes, it doesn't predict.</strong> It fits three case studies built from the same data used to construct it. To test if it's truly explanatory, it needs to predict future deployments before they happen or explain historical deployments it didn't analyze. Until then, treat it as a useful pattern, not a validated law.</p>
     </div>
 </div>
 
